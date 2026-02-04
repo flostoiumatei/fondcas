@@ -63,7 +63,8 @@
       "Bash(vercel --version:*)",
       "Bash(vercel login:*)",
       "Bash(vercel:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(npx json:*)"
     ]
   }
 }

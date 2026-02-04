@@ -217,22 +217,27 @@ export function formatPhone(phone: string): string {
 
 /**
  * Create Google Maps directions URL
- * Uses coordinates for accuracy, with name+address as query for display
+ * Uses address text as destination for better search results
  */
 export function getDirectionsUrl(lat: number, lng: number, name?: string, address?: string): string {
-  // Use coordinates for accurate destination
-  const coords = `${lat},${lng}`;
+  // Prefer using address text as destination - Google Maps will search for it
+  // This gives better results than coordinates alone, especially when coordinates
+  // point to a general area rather than the exact building
 
-  // Build a search query with name and address for better context
-  let query = coords;
-  if (name && address) {
-    query = encodeURIComponent(`${name}, ${address}`);
+  let destination: string;
+
+  if (address && address.length > 10) {
+    // Use full address if available and meaningful
+    destination = encodeURIComponent(address);
   } else if (name) {
-    query = encodeURIComponent(name);
+    // Fall back to name + address
+    destination = encodeURIComponent(address ? `${name}, ${address}` : name);
+  } else {
+    // Last resort: use coordinates
+    destination = `${lat},${lng}`;
   }
 
-  // Use both query (for display) and destination coordinates (for accuracy)
-  return `https://www.google.com/maps/dir/?api=1&destination=${coords}&query=${query}`;
+  return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
 }
 
 /**
