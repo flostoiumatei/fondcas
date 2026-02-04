@@ -52,7 +52,7 @@ function extractPossibleWebsites(provider: {
     }
   }
 
-  return [...new Set(websites)];
+  return Array.from(new Set(websites));
 }
 
 async function fetchWebsiteContent(url: string): Promise<{ content: string; finalUrl: string } | null> {

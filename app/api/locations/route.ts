@@ -169,7 +169,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Combine org IDs from name search and specialty search
-      const allOrgIds = [...new Set([...orgIdsFromName, ...orgIdsFromSpecialty])];
+      const allOrgIds = Array.from(new Set([...orgIdsFromName, ...orgIdsFromSpecialty]));
 
       if (allOrgIds.length > 0) {
         // Search in location fields OR organization matches (by name or specialty)

@@ -39,7 +39,7 @@ export async function GET() {
     }
 
     // Get unique cities
-    const uniqueCities = [...new Set(cities?.map(c => c.city).filter(Boolean) || [])].sort();
+    const uniqueCities = Array.from(new Set(cities?.map(c => c.city).filter(Boolean) || [])).sort();
 
     // Provider types - static list matching our data
     const providerTypes = [
