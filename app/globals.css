@@ -1,0 +1,403 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Medical Futuristic Theme - Light Mode */
+    --background: 210 25% 97%;
+    --foreground: 215 25% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Teal/Cyan primary - medical feel */
+    --primary: 187 85% 43%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Soft slate secondary */
+    --secondary: 215 20% 94%;
+    --secondary-foreground: 215 25% 25%;
+
+    --muted: 215 20% 94%;
+    --muted-foreground: 215 15% 50%;
+
+    /* Accent - electric purple for futuristic feel */
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 215 20% 88%;
+    --input: 215 20% 88%;
+    --ring: 187 85% 43%;
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(187, 85%, 43%) 0%, hsl(199, 89%, 48%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(280, 87%, 65%) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(152, 76%, 36%) 0%, hsl(166, 72%, 40%) 100%);
+    --gradient-bg: linear-gradient(180deg, hsl(210, 25%, 97%) 0%, hsl(200, 30%, 94%) 100%);
+  }
+
+  .dark {
+    --background: 220 25% 10%;
+    --foreground: 210 20% 95%;
+    --card: 220 25% 14%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 25% 14%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 187 85% 50%;
+    --primary-foreground: 220 25% 10%;
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 210 20% 90%;
+    --muted: 220 20% 20%;
+    --muted-foreground: 215 15% 60%;
+    --accent: 262 83% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 187 85% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+  }
+}
+
+/* Medical Futuristic Components */
+@layer components {
+  /* Glassmorphism card effect */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  /* Gradient button */
+  .btn-gradient {
+    background-image: var(--gradient-primary);
+    @apply text-white font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300;
+  }
+
+  /* Accent gradient button */
+  .btn-accent {
+    background-image: var(--gradient-accent);
+    @apply text-white font-medium shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30 transition-all duration-300;
+  }
+
+  /* Glow effect */
+  .glow-primary {
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.5);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px -5px hsl(var(--accent) / 0.5);
+  }
+
+  /* Medical icon container */
+  .icon-medical {
+    @apply p-3 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 text-primary;
+  }
+
+  /* Futuristic input */
+  .input-futuristic {
+    @apply bg-white/60 backdrop-blur-sm border-white/30 focus:border-primary/50 focus:ring-primary/20 transition-all duration-300;
+  }
+
+  /* Status badges */
+  .badge-success {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 text-white;
+  }
+
+  .badge-warning {
+    @apply bg-gradient-to-r from-amber-500 to-orange-500 text-white;
+  }
+
+  .badge-info {
+    @apply bg-gradient-to-r from-cyan-500 to-blue-500 text-white;
+  }
+
+  /* Animated border */
+  .border-animated {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .border-animated::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: inherit;
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .border-animated:hover::before {
+    opacity: 1;
+  }
+}
+
+/* PWA - Mobile App Feel */
+@layer utilities {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Futuristic scrollbar */
+  .scrollbar-futuristic::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-futuristic::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  .scrollbar-futuristic::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 3px;
+  }
+}
+
+/* Leaflet map fixes */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  border-radius: var(--radius);
+  font-family: inherit;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important;
+  padding: 0 !important;
+  background: white !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px !important;
+  font-family: inherit;
+}
+
+.leaflet-popup-close-button {
+  color: #666 !important;
+  font-size: 18px !important;
+  padding: 6px 8px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #000 !important;
+}
+
+/* Ensure zoom controls are always visible and clickable */
+.leaflet-control-container {
+  position: absolute;
+  z-index: 1000;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  margin: 12px !important;
+}
+
+.leaflet-control-zoom a {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 20px !important;
+  color: hsl(var(--primary)) !important;
+  background: white !important;
+  border: none !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-control-zoom a:hover {
+  background: hsl(var(--primary) / 0.1) !important;
+  color: hsl(var(--primary)) !important;
+}
+
+.leaflet-control-zoom-in {
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+/* Make attribution smaller */
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgba(255,255,255,0.8) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px;
+}
+
+/* Bottom navigation styles */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: hsl(var(--background) / 0.9);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid hsl(var(--border));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Card with tap feedback */
+.card-tap {
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+.card-tap:active {
+  transform: scale(0.98);
+}
+
+/* Status indicator animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px hsl(var(--primary) / 0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient border animation */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-border-animated {
+  background: linear-gradient(90deg, hsl(187, 85%, 43%), hsl(262, 83%, 58%), hsl(187, 85%, 43%));
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Animated blob effect */
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 12s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}

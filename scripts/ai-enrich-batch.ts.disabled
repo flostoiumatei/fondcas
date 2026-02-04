@@ -1,0 +1,507 @@
+/**
+ * AI Enrich Organizations - Batch Processing with Checkpointing
+ *
+ * Processes organizations in batches, saving progress after each batch.
+ * Can resume from last checkpoint if interrupted.
+ *
+ * Usage: npx tsx scripts/ai-enrich-batch.ts
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import Anthropic from '@anthropic-ai/sdk';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.local' });
+
+const INPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+const OUTPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+
+// Configuration
+const BATCH_SIZE = 5;  // Process 5 orgs concurrently per batch
+const DELAY_BETWEEN_BATCHES_MS = 2000;  // 2 seconds between batches
+const MAX_RETRIES = 3;  // Retry failed requests up to 3 times
+
+// ============================================
+// TYPES
+// ============================================
+
+interface Organization {
+  cui?: string;
+  legalName: string;
+  providerType: string;
+  cnasContractNumber?: string;
+  dataSource: string;
+  dataSourceDate?: string;
+  specialties: string[];
+  primaryLocation: {
+    address?: string;
+    city?: string;
+    county: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+  };
+}
+
+interface DiscoveredLocation {
+  name: string;
+  address: string;
+  city: string;
+  county?: string;
+  phone?: string;
+  website?: string;
+  openingHours?: string;
+  confidence: number;
+}
+
+interface EnrichedOrganization extends Organization {
+  isNetwork: boolean;
+  networkBrand?: string;
+  networkWebsite?: string;
+  aiConfidence: number;
+  aiReasoning: string;
+  discoveredLocations: DiscoveredLocation[];
+  aiEnrichedAt: string;
+}
+
+interface CheckpointData {
+  lastProcessedIndex: number;
+  totalOrganizations: number;
+  enrichedCount: number;
+  networksFound: number;
+  totalLocations: number;
+  lastUpdated: string;
+}
+
+// ============================================
+// HELPERS
+// ============================================
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function log(message: string): void {
+  const timestamp = new Date().toISOString().substring(11, 19);
+  console.log(`[${timestamp}] ${message}`);
+}
+
+function extractDomainFromEmail(email: string): string | null {
+  const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  if (!match) return null;
+  const domain = match[1].toLowerCase();
+  const freeEmailDomains = ['gmail.com', 'yahoo.com', 'yahoo.ro', 'hotmail.com', 'outlook.com', 'icloud.com', 'mail.com', 'protonmail.com'];
+  if (freeEmailDomains.includes(domain)) return null;
+  return domain;
+}
+
+async function fetchWebsiteContent(url: string, timeoutMs: number = 10000): Promise<string | null> {
+  try {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    const response = await fetch(fullUrl, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'ro-RO,ro;q=0.9,en;q=0.8',
+      },
+      redirect: 'follow',
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) return null;
+    const html = await response.text();
+
+    // Clean HTML and extract text
+    return html
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+      .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+      .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 12000);
+  } catch {
+    return null;
+  }
+}
+
+async function tryFetchWebsite(org: Organization): Promise<{ content: string; url: string } | null> {
+  const urlsToTry: string[] = [];
+
+  // 1. Try explicit website
+  if (org.primaryLocation.website) {
+    urlsToTry.push(org.primaryLocation.website);
+  }
+
+  // 2. Try domain from email
+  if (org.primaryLocation.email) {
+    const domain = extractDomainFromEmail(org.primaryLocation.email);
+    if (domain) {
+      urlsToTry.push(`https://${domain}`);
+      urlsToTry.push(`https://www.${domain}`);
+    }
+  }
+
+  // Try each URL
+  for (const url of urlsToTry) {
+    const content = await fetchWebsiteContent(url);
+    if (content && content.length > 300) {
+      return { content, url };
+    }
+  }
+
+  return null;
+}
+
+// ============================================
+// AI ENRICHMENT
+// ============================================
+
+async function enrichOrganization(
+  anthropic: Anthropic,
+  org: Organization,
+  retryCount: number = 0
+): Promise<EnrichedOrganization> {
+  const websiteResult = await tryFetchWebsite(org);
+  const emailDomain = org.primaryLocation.email ? extractDomainFromEmail(org.primaryLocation.email) : null;
+
+  const prompt = `Ești un expert în identificarea clinicilor și rețelelor medicale din România.
+
+SARCINĂ: Analizează această organizație medicală și determină dacă este o rețea cu multiple locații sau o clinică individuală.
+
+DATE OFICIALE CNAS:
+- Denumire juridică: ${org.legalName}
+- CUI: ${org.cui || 'necunoscut'}
+- Tip furnizor: ${org.providerType}
+- Specialități: ${org.specialties.join(', ') || 'nespecificate'}
+- Adresă oficială: ${org.primaryLocation.address || 'necunoscută'}
+- Oraș: ${org.primaryLocation.city || 'necunoscut'}
+- Județ: ${org.primaryLocation.county}
+- Telefon: ${org.primaryLocation.phone || 'necunoscut'}
+- Email: ${org.primaryLocation.email || 'necunoscut'}
+${emailDomain ? `- Domeniu email corporativ: ${emailDomain}` : ''}
+
+${websiteResult ? `CONȚINUT WEBSITE (${websiteResult.url}):
+${websiteResult.content.slice(0, 8000)}` : 'WEBSITE: Nu am putut accesa un website pentru această organizație.'}
+
+INSTRUCȚIUNI:
+1. Determină dacă aceasta este o REȚEA MEDICALĂ (are multiple puncte de lucru/clinici) sau o LOCAȚIE UNICĂ.
+2. Identifică BRANDUL comercial (poate fi diferit de denumirea juridică).
+3. Dacă este rețea, identifică TOATE locațiile cu adrese specifice.
+4. Acordă un scor de încredere (0-100) bazat pe calitatea informațiilor.
+
+INDICII pentru identificarea rețelelor:
+- Prezența cuvintelor: "locații", "puncte de lucru", "clinici", "centre"
+- Liste de adrese pe website
+- Mențiuni precum "Găsește clinica din zona ta"
+- Branduri cunoscute: MedLife, Regina Maria, Medicover, Sanador, etc.
+
+INDICII pentru locații unice:
+- CMI (Cabinet Medical Individual)
+- O singură adresă menționată
+- Nume de medic în denumire
+
+Răspunde STRICT în format JSON (fără text suplimentar):
+{
+  "isNetwork": true/false,
+  "networkBrand": "Numele brandului comercial sau null dacă e CMI/locație unică",
+  "networkWebsite": "URL-ul principal al rețelei sau null",
+  "confidence": 0-100,
+  "reasoning": "Explicație concisă a deciziei (max 100 cuvinte)",
+  "locations": [
+    {
+      "name": "Numele punctului de lucru",
+      "address": "Adresa completă",
+      "city": "Orașul",
+      "county": "Județul (cod 2 litere: B, CJ, TM, etc.)",
+      "phone": "Telefon sau null",
+      "openingHours": "Program sau null",
+      "confidence": 0-100
+    }
+  ]
+}
+
+IMPORTANT:
+- Dacă NU e rețea, returnează un array "locations" GOL [].
+- Pentru rețele, include DOAR locațiile despre care ai informații concrete (adresă specifică).
+- Nu inventa date. Dacă nu ești sigur, pune confidence scăzut.
+- Pentru CMI-uri, isNetwork trebuie să fie false.`;
+
+  try {
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+
+    const result = JSON.parse(jsonMatch[0]);
+
+    // Build enriched organization
+    const enriched: EnrichedOrganization = {
+      ...org,
+      isNetwork: result.isNetwork === true,
+      networkBrand: result.networkBrand || null,
+      networkWebsite: result.networkWebsite || websiteResult?.url || null,
+      aiConfidence: typeof result.confidence === 'number' ? result.confidence : 50,
+      aiReasoning: result.reasoning || '',
+      discoveredLocations: [],
+      aiEnrichedAt: new Date().toISOString(),
+    };
+
+    // Process discovered locations for networks
+    if (result.isNetwork && Array.isArray(result.locations) && result.locations.length > 0) {
+      enriched.discoveredLocations = result.locations.map((loc: any) => ({
+        name: loc.name || enriched.networkBrand || org.legalName,
+        address: loc.address || '',
+        city: loc.city || '',
+        county: loc.county || org.primaryLocation.county,
+        phone: loc.phone || null,
+        website: loc.website || enriched.networkWebsite || null,
+        openingHours: loc.openingHours || null,
+        confidence: typeof loc.confidence === 'number' ? loc.confidence : 70,
+      }));
+    }
+
+    // Always add primary location if no locations discovered
+    if (enriched.discoveredLocations.length === 0) {
+      enriched.discoveredLocations.push({
+        name: enriched.networkBrand || org.legalName,
+        address: org.primaryLocation.address || '',
+        city: org.primaryLocation.city || '',
+        county: org.primaryLocation.county,
+        phone: org.primaryLocation.phone || null,
+        website: enriched.networkWebsite || org.primaryLocation.website || null,
+        openingHours: null,
+        confidence: 100,
+      });
+    }
+
+    return enriched;
+  } catch (error: any) {
+    // Handle rate limits with retry
+    if (error?.status === 429 && retryCount < MAX_RETRIES) {
+      const waitTime = Math.pow(2, retryCount + 1) * 1000;
+      log(`  Rate limited, waiting ${waitTime / 1000}s before retry...`);
+      await sleep(waitTime);
+      return enrichOrganization(anthropic, org, retryCount + 1);
+    }
+
+    // Return fallback for other errors
+    return {
+      ...org,
+      isNetwork: false,
+      networkBrand: null,
+      networkWebsite: websiteResult?.url || null,
+      aiConfidence: 0,
+      aiReasoning: `Error: ${error?.message || error}`,
+      discoveredLocations: [{
+        name: org.legalName,
+        address: org.primaryLocation.address || '',
+        city: org.primaryLocation.city || '',
+        county: org.primaryLocation.county,
+        phone: org.primaryLocation.phone || null,
+        website: org.primaryLocation.website || null,
+        openingHours: null,
+        confidence: 100,
+      }],
+      aiEnrichedAt: new Date().toISOString(),
+    };
+  }
+}
+
+// ============================================
+// CHECKPOINT MANAGEMENT
+// ============================================
+
+function loadCheckpoint(): CheckpointData | null {
+  const checkpointFile = path.join(OUTPUT_DIR, 'enrichment_checkpoint.json');
+  if (fs.existsSync(checkpointFile)) {
+    return JSON.parse(fs.readFileSync(checkpointFile, 'utf-8'));
+  }
+  return null;
+}
+
+function saveCheckpoint(data: CheckpointData): void {
+  const checkpointFile = path.join(OUTPUT_DIR, 'enrichment_checkpoint.json');
+  fs.writeFileSync(checkpointFile, JSON.stringify(data, null, 2));
+}
+
+function loadEnrichedOrganizations(): EnrichedOrganization[] {
+  const enrichedFile = path.join(OUTPUT_DIR, 'enriched_organizations.json');
+  if (fs.existsSync(enrichedFile)) {
+    return JSON.parse(fs.readFileSync(enrichedFile, 'utf-8'));
+  }
+  return [];
+}
+
+function saveEnrichedOrganizations(data: EnrichedOrganization[]): void {
+  const enrichedFile = path.join(OUTPUT_DIR, 'enriched_organizations.json');
+  fs.writeFileSync(enrichedFile, JSON.stringify(data, null, 2));
+}
+
+// ============================================
+// MAIN
+// ============================================
+
+async function main(): Promise<void> {
+  console.log('╔════════════════════════════════════════════════════════════╗');
+  console.log('║     AI Enrich Organizations - Batch Processing            ║');
+  console.log('╚════════════════════════════════════════════════════════════╝\n');
+
+  // Check API key
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('ERROR: ANTHROPIC_API_KEY not set in .env.local');
+    process.exit(1);
+  }
+
+  // Load organizations
+  const orgsFile = path.join(INPUT_DIR, 'organizations.json');
+  const organizations: Organization[] = JSON.parse(fs.readFileSync(orgsFile, 'utf-8'));
+  log(`Loaded ${organizations.length} organizations from source`);
+
+  // Load existing enriched data
+  let enrichedOrgs = loadEnrichedOrganizations();
+  log(`Found ${enrichedOrgs.length} already enriched organizations`);
+
+  // Check for checkpoint
+  const checkpoint = loadCheckpoint();
+  let startIndex = 0;
+
+  if (checkpoint && checkpoint.lastProcessedIndex >= 0) {
+    startIndex = checkpoint.lastProcessedIndex + 1;
+    log(`Resuming from checkpoint at index ${startIndex}`);
+  }
+
+  // Build set of already processed
+  const processedKeys = new Set(enrichedOrgs.map(e => e.cui || e.legalName));
+
+  // Filter organizations to process
+  const toProcess = organizations.filter((org, idx) => {
+    if (idx < startIndex) return false;
+    return !processedKeys.has(org.cui || org.legalName);
+  });
+
+  log(`Organizations to process: ${toProcess.length}`);
+
+  if (toProcess.length === 0) {
+    log('All organizations already enriched!');
+    return;
+  }
+
+  // Initialize Anthropic client
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+
+  // Stats
+  let networksFound = enrichedOrgs.filter(e => e.isNetwork).length;
+  let totalLocations = enrichedOrgs.reduce((sum, e) => sum + e.discoveredLocations.length, 0);
+  let processedCount = enrichedOrgs.length;
+  let errors = 0;
+
+  console.log('\n' + '─'.repeat(60));
+  log(`Starting batch processing (batch size: ${BATCH_SIZE})`);
+  console.log('─'.repeat(60) + '\n');
+
+  // Process in batches
+  const totalBatches = Math.ceil(toProcess.length / BATCH_SIZE);
+
+  for (let batchNum = 0; batchNum < totalBatches; batchNum++) {
+    const batchStart = batchNum * BATCH_SIZE;
+    const batchEnd = Math.min(batchStart + BATCH_SIZE, toProcess.length);
+    const batch = toProcess.slice(batchStart, batchEnd);
+
+    const globalStartIdx = startIndex + batchStart;
+    log(`Batch ${batchNum + 1}/${totalBatches} (orgs ${globalStartIdx + 1}-${globalStartIdx + batch.length} of ${organizations.length})`);
+
+    // Process batch concurrently
+    const batchPromises = batch.map(async (org, idx) => {
+      const orgName = org.legalName.substring(0, 40).padEnd(40);
+      process.stdout.write(`  [${globalStartIdx + idx + 1}] ${orgName} `);
+
+      const enriched = await enrichOrganization(anthropic, org);
+
+      if (enriched.aiConfidence === 0) {
+        console.log('✗ ERROR');
+        errors++;
+      } else if (enriched.isNetwork) {
+        console.log(`✓ NETWORK: ${enriched.networkBrand} (${enriched.discoveredLocations.length} locations)`);
+        networksFound++;
+      } else {
+        console.log(`✓ ${enriched.networkBrand || 'single location'}`);
+      }
+
+      totalLocations += enriched.discoveredLocations.length;
+      return enriched;
+    });
+
+    const batchResults = await Promise.all(batchPromises);
+
+    // Add results to enriched list
+    for (const enriched of batchResults) {
+      const existingIdx = enrichedOrgs.findIndex(e =>
+        (e.cui && e.cui === enriched.cui) || e.legalName === enriched.legalName
+      );
+      if (existingIdx >= 0) {
+        enrichedOrgs[existingIdx] = enriched;
+      } else {
+        enrichedOrgs.push(enriched);
+      }
+    }
+
+    processedCount = enrichedOrgs.length;
+
+    // Save checkpoint after each batch
+    saveEnrichedOrganizations(enrichedOrgs);
+    saveCheckpoint({
+      lastProcessedIndex: globalStartIdx + batch.length - 1,
+      totalOrganizations: organizations.length,
+      enrichedCount: processedCount,
+      networksFound,
+      totalLocations,
+      lastUpdated: new Date().toISOString(),
+    });
+
+    log(`  → Checkpoint saved (${processedCount} total enriched)\n`);
+
+    // Delay between batches (except for last batch)
+    if (batchNum < totalBatches - 1) {
+      await sleep(DELAY_BETWEEN_BATCHES_MS);
+    }
+  }
+
+  // Final summary
+  console.log('\n' + '═'.repeat(60));
+  console.log('                    ENRICHMENT COMPLETE');
+  console.log('═'.repeat(60));
+  console.log(`  Total organizations:  ${enrichedOrgs.length}`);
+  console.log(`  Networks identified:  ${networksFound}`);
+  console.log(`  Total locations:      ${totalLocations}`);
+  console.log(`  Errors:               ${errors}`);
+  console.log('═'.repeat(60));
+  console.log(`\nOutput: ${path.join(OUTPUT_DIR, 'enriched_organizations.json')}`);
+}
+
+main().catch(error => {
+  console.error('\nFATAL ERROR:', error);
+  process.exit(1);
+});

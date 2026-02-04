@@ -1,0 +1,442 @@
+/**
+ * AI Enrich Organizations
+ *
+ * Step 2: For each organization, use AI to:
+ * 1. Detect if it's a healthcare network (multiple locations)
+ * 2. Find the brand name
+ * 3. Discover all clinic locations
+ *
+ * Usage: npx tsx scripts/ai-enrich-organizations.ts
+ *
+ * Options:
+ *   --limit=N     Process only N organizations (for testing)
+ *   --offset=N    Skip first N organizations
+ *   --continue    Continue from last processed
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import Anthropic from '@anthropic-ai/sdk';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
+
+const INPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+const OUTPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+const PROGRESS_FILE = path.join(OUTPUT_DIR, 'enrichment_progress.json');
+
+// Rate limiting
+const DELAY_BETWEEN_CALLS_MS = 1500; // 1.5 seconds between API calls
+const MAX_RETRIES = 3;
+
+// ============================================
+// TYPES
+// ============================================
+
+interface Organization {
+  cui?: string;
+  legalName: string;
+  providerType: string;
+  cnasContractNumber?: string;
+  dataSource: string;
+  dataSourceDate?: string;
+  specialties: string[];
+  primaryLocation: {
+    address?: string;
+    city?: string;
+    county: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+  };
+}
+
+interface DiscoveredLocation {
+  name: string;
+  address: string;
+  city: string;
+  county?: string;
+  phone?: string;
+  website?: string;
+  openingHours?: string;
+  confidence: number;
+}
+
+interface EnrichedOrganization extends Organization {
+  isNetwork: boolean;
+  networkBrand?: string;
+  networkWebsite?: string;
+  aiConfidence: number;
+  aiReasoning: string;
+  discoveredLocations: DiscoveredLocation[];
+  aiEnrichedAt: string;
+}
+
+interface Progress {
+  lastProcessedIndex: number;
+  totalProcessed: number;
+  errors: string[];
+}
+
+// ============================================
+// HELPERS
+// ============================================
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function extractDomainFromEmail(email: string): string | null {
+  const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  if (!match) return null;
+  const domain = match[1].toLowerCase();
+  if (['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'yahoo.ro', 'gmail.ro'].includes(domain)) {
+    return null;
+  }
+  return domain;
+}
+
+async function fetchWebsiteContent(url: string): Promise<string | null> {
+  try {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
+    const response = await fetch(fullUrl, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'ro-RO,ro;q=0.9,en;q=0.8',
+      },
+      redirect: 'follow',
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) return null;
+
+    const html = await response.text();
+    const textContent = html
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 20000);
+
+    return textContent;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function tryFetchWebsite(org: Organization): Promise<{ content: string; url: string } | null> {
+  // Try explicit website first
+  if (org.primaryLocation.website) {
+    const content = await fetchWebsiteContent(org.primaryLocation.website);
+    if (content && content.length > 500) {
+      return { content, url: org.primaryLocation.website };
+    }
+  }
+
+  // Try email domain
+  if (org.primaryLocation.email) {
+    const domain = extractDomainFromEmail(org.primaryLocation.email);
+    if (domain) {
+      for (const prefix of ['https://', 'https://www.']) {
+        const content = await fetchWebsiteContent(`${prefix}${domain}`);
+        if (content && content.length > 500) {
+          return { content, url: `${prefix}${domain}` };
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+// ============================================
+// AI ENRICHMENT
+// ============================================
+
+async function enrichOrganization(
+  anthropic: Anthropic,
+  org: Organization
+): Promise<EnrichedOrganization> {
+  // Try to fetch website content
+  const websiteResult = await tryFetchWebsite(org);
+  const emailDomain = org.primaryLocation.email ? extractDomainFromEmail(org.primaryLocation.email) : null;
+
+  const prompt = `Ești un expert în identificarea clinicilor medicale din România. Analizează această organizație și determină:
+1. Este o REȚEA medicală (operează multiple locații/clinici)?
+2. Care este BRANDUL real (numele pe care îl văd pacienții)?
+3. Dacă este rețea, găsește TOATE locațiile/clinicile lor.
+
+DATE CNAS:
+- Denumire juridică: ${org.legalName}
+- CUI: ${org.cui || 'necunoscut'}
+- Tip: ${org.providerType}
+- Adresă CNAS: ${org.primaryLocation.address || 'necunoscută'}
+- Oraș: ${org.primaryLocation.city || 'necunoscut'}
+- Județ: ${org.primaryLocation.county}
+- Telefon: ${org.primaryLocation.phone || 'necunoscut'}
+- Email: ${org.primaryLocation.email || 'necunoscut'}
+- Specialități: ${org.specialties.join(', ') || 'necunoscute'}
+
+INDICII:
+${emailDomain ? `- Domeniu email: ${emailDomain} (INDICIU IMPORTANT pentru brand!)` : '- Nu are email cu domeniu propriu'}
+${websiteResult ? `- Am accesat website-ul: ${websiteResult.url}` : '- Nu am putut accesa website-ul'}
+
+${websiteResult ? `CONȚINUT WEBSITE:
+${websiteResult.content.slice(0, 12000)}` : ''}
+
+REGULI DE ANALIZĂ:
+1. Denumirile de tipul "SC ... SRL" sunt JURIDICE, nu sunt brand-uri
+2. Dacă email-ul are domeniu propriu (ex: office@reginamaria.ro), brand-ul e probabil legat de domeniu
+3. Rețelele mari (MedLife, Regina Maria, Medicover, Sfanta Maria, etc.) au MULTE locații - caută-le pe toate
+4. Pentru fiecare locație găsită, extrage: nume, adresă completă, telefon, program
+5. Adresa din CNAS poate fi sediul social, NU neapărat o clinică activă
+
+Răspunde DOAR în JSON valid:
+{
+  "isNetwork": <true/false - are multiple locații?>,
+  "networkBrand": "<numele de brand sau null>",
+  "networkWebsite": "<website-ul principal sau null>",
+  "confidence": <0-100>,
+  "reasoning": "<explică în 1-2 propoziții cum ai determinat>",
+  "locations": [
+    {
+      "name": "<numele acestei locații>",
+      "address": "<adresa completă>",
+      "city": "<oraș>",
+      "county": "<județ sau null>",
+      "phone": "<telefon sau null>",
+      "openingHours": "<program sau null>",
+      "confidence": <0-100>
+    }
+  ]
+}
+
+IMPORTANT:
+- Dacă NU este rețea, returnează locations cu O SINGURĂ locație (cea din CNAS)
+- Dacă ESTE rețea, returnează TOATE locațiile pe care le poți identifica
+- Pentru locațiile din București, pune "București" la city
+- Dacă nu ești sigur de o locație, pune confidence mai mic (60-75)`;
+
+  let retries = 0;
+  while (retries < MAX_RETRIES) {
+    try {
+      const message = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }],
+      });
+
+      const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+
+      if (!jsonMatch) {
+        throw new Error('No JSON found in response');
+      }
+
+      const result = JSON.parse(jsonMatch[0]);
+
+      // Build enriched organization
+      const enriched: EnrichedOrganization = {
+        ...org,
+        isNetwork: result.isNetwork || false,
+        networkBrand: result.networkBrand || null,
+        networkWebsite: result.networkWebsite || websiteResult?.url || null,
+        aiConfidence: result.confidence || 50,
+        aiReasoning: result.reasoning || '',
+        discoveredLocations: (result.locations || []).map((loc: any) => ({
+          name: loc.name || org.legalName,
+          address: loc.address || org.primaryLocation.address || '',
+          city: loc.city || org.primaryLocation.city || '',
+          county: loc.county || org.primaryLocation.county,
+          phone: loc.phone || null,
+          website: loc.website || null,
+          openingHours: loc.openingHours || null,
+          confidence: loc.confidence || 70,
+        })),
+        aiEnrichedAt: new Date().toISOString(),
+      };
+
+      // Ensure at least one location (primary from CNAS)
+      if (enriched.discoveredLocations.length === 0) {
+        enriched.discoveredLocations.push({
+          name: enriched.networkBrand || org.legalName,
+          address: org.primaryLocation.address || '',
+          city: org.primaryLocation.city || '',
+          county: org.primaryLocation.county,
+          phone: org.primaryLocation.phone || null,
+          website: org.primaryLocation.website || null,
+          openingHours: null,
+          confidence: 100, // CNAS data is 100% confidence
+        });
+      }
+
+      return enriched;
+    } catch (error) {
+      retries++;
+      console.error(`    Retry ${retries}/${MAX_RETRIES}: ${error}`);
+      if (retries < MAX_RETRIES) {
+        await sleep(2000 * retries); // Exponential backoff
+      }
+    }
+  }
+
+  // Failed after retries - return original with no enrichment
+  return {
+    ...org,
+    isNetwork: false,
+    networkBrand: null,
+    networkWebsite: null,
+    aiConfidence: 0,
+    aiReasoning: 'AI enrichment failed',
+    discoveredLocations: [{
+      name: org.legalName,
+      address: org.primaryLocation.address || '',
+      city: org.primaryLocation.city || '',
+      county: org.primaryLocation.county,
+      phone: org.primaryLocation.phone || null,
+      website: org.primaryLocation.website || null,
+      openingHours: null,
+      confidence: 100,
+    }],
+    aiEnrichedAt: new Date().toISOString(),
+  };
+}
+
+// ============================================
+// MAIN
+// ============================================
+
+async function main(): Promise<void> {
+  console.log('=== AI Enrich Organizations ===\n');
+  console.log('Step 2: Detect networks and discover locations\n');
+
+  // Check API key
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('ERROR: ANTHROPIC_API_KEY not set in environment');
+    process.exit(1);
+  }
+
+  // Parse arguments
+  const args = process.argv.slice(2);
+  let limit = Infinity;
+  let offset = 0;
+  let continueFromLast = false;
+
+  for (const arg of args) {
+    if (arg.startsWith('--limit=')) {
+      limit = parseInt(arg.split('=')[1]);
+    } else if (arg.startsWith('--offset=')) {
+      offset = parseInt(arg.split('=')[1]);
+    } else if (arg === '--continue') {
+      continueFromLast = true;
+    }
+  }
+
+  // Load organizations
+  const orgsFile = path.join(INPUT_DIR, 'organizations.json');
+  if (!fs.existsSync(orgsFile)) {
+    console.error(`ERROR: Organizations file not found: ${orgsFile}`);
+    console.error('Run first: npx tsx scripts/parse-cnas-data-v2.ts');
+    process.exit(1);
+  }
+
+  const organizations: Organization[] = JSON.parse(fs.readFileSync(orgsFile, 'utf-8'));
+  console.log(`Loaded ${organizations.length} organizations\n`);
+
+  // Load progress
+  let progress: Progress = { lastProcessedIndex: -1, totalProcessed: 0, errors: [] };
+  if (continueFromLast && fs.existsSync(PROGRESS_FILE)) {
+    progress = JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf-8'));
+    offset = progress.lastProcessedIndex + 1;
+    console.log(`Continuing from index ${offset} (${progress.totalProcessed} already processed)\n`);
+  }
+
+  // Load existing enriched data
+  const enrichedFile = path.join(OUTPUT_DIR, 'enriched_organizations.json');
+  let enrichedOrgs: EnrichedOrganization[] = [];
+  if (fs.existsSync(enrichedFile)) {
+    enrichedOrgs = JSON.parse(fs.readFileSync(enrichedFile, 'utf-8'));
+  }
+
+  // Create Anthropic client
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+
+  // Process organizations
+  const toProcess = organizations.slice(offset, offset + limit);
+  console.log(`Processing ${toProcess.length} organizations (offset=${offset}, limit=${limit})\n`);
+
+  let networksFound = 0;
+  let totalLocations = 0;
+
+  for (let i = 0; i < toProcess.length; i++) {
+    const org = toProcess[i];
+    const globalIndex = offset + i;
+
+    process.stdout.write(`[${globalIndex + 1}/${organizations.length}] ${org.legalName.substring(0, 40)}...`);
+
+    try {
+      const enriched = await enrichOrganization(anthropic, org);
+
+      // Update or add to enriched list
+      const existingIndex = enrichedOrgs.findIndex(e =>
+        e.cui === enriched.cui || e.legalName === enriched.legalName
+      );
+      if (existingIndex >= 0) {
+        enrichedOrgs[existingIndex] = enriched;
+      } else {
+        enrichedOrgs.push(enriched);
+      }
+
+      const locCount = enriched.discoveredLocations.length;
+      totalLocations += locCount;
+
+      if (enriched.isNetwork) {
+        networksFound++;
+        console.log(` ✓ NETWORK: ${enriched.networkBrand || 'unknown'} (${locCount} locations)`);
+      } else {
+        console.log(` ✓ Single (${enriched.networkBrand || 'no brand'})`);
+      }
+
+      // Update progress
+      progress.lastProcessedIndex = globalIndex;
+      progress.totalProcessed++;
+
+      // Save periodically (every 10)
+      if ((i + 1) % 10 === 0) {
+        fs.writeFileSync(enrichedFile, JSON.stringify(enrichedOrgs, null, 2));
+        fs.writeFileSync(PROGRESS_FILE, JSON.stringify(progress, null, 2));
+      }
+
+      // Rate limiting
+      await sleep(DELAY_BETWEEN_CALLS_MS);
+    } catch (error) {
+      console.log(` ✗ ERROR: ${error}`);
+      progress.errors.push(`${globalIndex}: ${org.legalName} - ${error}`);
+    }
+  }
+
+  // Final save
+  fs.writeFileSync(enrichedFile, JSON.stringify(enrichedOrgs, null, 2));
+  fs.writeFileSync(PROGRESS_FILE, JSON.stringify(progress, null, 2));
+
+  // Statistics
+  console.log('\n=== Results ===');
+  console.log(`Processed: ${toProcess.length} organizations`);
+  console.log(`Networks found: ${networksFound}`);
+  console.log(`Total locations discovered: ${totalLocations}`);
+  console.log(`Errors: ${progress.errors.length}`);
+
+  console.log(`\nOutput: ${enrichedFile}`);
+  console.log('\n✓ Step 2 complete. Run next: npx tsx scripts/sync-v2-to-db.ts');
+}
+
+main().catch(console.error);

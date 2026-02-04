@@ -1,0 +1,651 @@
+=== FondCAS Database Sync ===
+
+Loaded 8192 fund allocations from all_allocations.json
+Loaded 1851 provider details from all_providers.json
+
+--- Building provider index for matching ---
+Loaded 1000 existing providers for matching
+  - With business email: 206
+  - With phone: 308
+  - With address: 324
+
+--- Step 1: Creating providers from fund allocations ---
+Found 1392 unique providers in fund data
+  Matched "PERSONAL GENETICS SRL" (score: 250) - email domain: personalgenetics.ro, phone: 213110793, address: frumoasă-4-1, exact name
+  Matched "CENTRUL MEDICAL UNIREA SRL" (score: 230) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a, name 81% similar
+  Matched "SANADOR SRL" (score: 150) - email domain: sanador.ro, exact name
+  Matched "FUNDATIA DR. V. BABES" (score: 80) - address: piscului-1-4, name 84% similar
+  Matched "CENTRUL DE EVALUARE ȘI TRATAMENT AL TOXICODEPENDENȚILOR PENTRU TINERI  "SF. STELIAN"" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INSTITUTUL DE ENDOCRINOLOGIE "DR.  C. I. PARHON" BUCUREȘTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "CENTRUL METODOLOGIC DE REUMATOLOGIE "DR. ION STOIA" BUCUREȘTI" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INSTITUTUL DE URGENŢĂ PENTRU BOLI CARDIOVASCULARE "PROF. DR. C. C.  ILIESCU" BUCUREȘTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL CLINIC FUNDENI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL DE DIABET, NUTRIȚIE ȘI BOLI METABOLICE "DR. N. PAULESCU" BUCUREȘTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL ONCOLOGIC "PROF. DR. AL. TRESTIOREANU" BUCUREȘTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL NAȚIONAL PENTRU SĂNĂTATEA MAMEI ȘI COPILULUI "ALESSANDRESCU - RUSESCU"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL NAȚIONAL DE RECUPERARE, MEDICINĂ FIZICĂ ȘI BALNEOCLIMATOLOGIE" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL NAȚIONAL DE NEUROLOGIE ȘI BOLI NEUROVASCULARE BUCUREȘTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL DE PNEUMOLOGIE MARIUS NASTA" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL DE FONOAUDIOLOGIE ȘI CHIRURGIE FUNCȚIONALĂ ORL "DR. HOCIOTĂ"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL DE BOLI INFECȚIOASE "Dr. MATEI BALȘ"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "C.N.M.R.N. "NICOLAE ROBĂNESCU"" (score: 100) - address: dumitru-40-4, exact name
+  Matched "EUROCLINIC HOSPITAL SA" (score: 100) - email domain: reginamaria.ro
+  Matched "MED LIFE SA" (score: 100) - email domain: medlife.ro
+  Matched "TINOS CLINIC SRL" (score: 200) - email domain: tinosmedical.ro, address: barca-2-5, exact name
+  Matched "FOCUS LAB PLUS S.R.L." (score: 100) - address: ciresului-1-2, exact name
+  Matched "DELTA HEALTH CARE SRL" (score: 200) - email domain: deltapromedical.ro, phone: 0316208093, address: caramfil-85a-1
+  Matched "SANAMED HOSPITAL SRL" (score: 150) - email domain: sana-med.ro, exact name
+  Matched "WEST EYE HOSPITAL SRL" (score: 150) - email domain: westeyehospital.ro, address: vitan-137-3
+  Matched "MEDLIFE SA BUCUREȘTI - SUCURSALA BUCUREȘTI" (score: 150) - email domain: medlife.ro, phone: 0219646
+  Matched "MEDICOVER SRL" (score: 100) - address: pechea-8-1, exact name
+  Matched "MEDICOVER HOSPITALS SRL" (score: 80) - address: pechea-8-1, name 96% similar
+  Matched "LAURUS MEDICAL SRL" (score: 100) - address: mihai-100-2, exact name
+  Matched "FUNDAȚIA BUCURIA AJUTORULUI" (score: 150) - email domain: clinicasfspiridon.ro, phone: 0787820066
+  Matched "POLICLINICO DI MONZA" (score: 100) - address: tony-27-2, exact name
+  Matched "PROMED SYSTEM SRL" (score: 100) - address: targoviste-12a, exact name
+  Matched "FUNDAȚIA DR. V. BABEȘ" (score: 150) - email domain: clinicasfspiridon.ro, phone: 0787820066
+  Matched "CENTRUL MEDICAL OVERMED SRL" (score: 100) - email domain: reginamaria.ro
+  Matched "MNT HEALTHCARE SRL" (score: 100) - email domain: neolife.ro
+  Matched "IMUNOCLASS SRL" (score: 100) - address: baldovin-1, exact name
+  Matched "NUTRILIFE SRL" (score: 100) - address: constantin-10, exact name
+  Matched "SAPIENS MEDICAL SRL" (score: 100) - address: strtudor-9, exact name
+  Matched "FUNDAȚIA HOSPICE CASA SPERANȚEI" (score: 150) - email domain: clinicasfspiridon.ro, phone: 0787820066
+  Matched "CENTRUL DE DIAGNOSTIC ȘI TRATAMENT PROVITA SA" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "ASOCIAȚIA CENTRUL DE ÎNGRIJIRE CASA SUTER" (score: 150) - phone: 0213373131, address: suter-3-4, exact name
+  Matched "Eligon" (score: 200) - email domain: eligon.ro, phone: 0722232483, address: ferentari-14
+  Matched "AIS CLINCS&HOSPITAL SRL" (score: 100) - address: sosalexandriei-144-5, exact name
+  Matched "MEDICAL CITY BLUE SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "INTERCARDIOCLINIQUE SRL" (score: 250) - email domain: intercardioclinique.ro, phone: 0724350064, address: gheorghe-144-2, exact name
+  Matched "DIAMEDICA SRL" (score: 200) - email domain: diamedica.ro, phone: 0723197060, address: dacia-54-2
+  Matched "REVERA ASSISTED SRL" (score: 150) - phone: 02122213700751537428, address: gheorghe-8a-1, exact name
+  Matched "IMUNOMEDICA PROVITA SRL" (score: 200) - email domain: imuno-medica.ro, address: virgiliu-81-1, exact name
+  Matched "DONNA ONCOLOGY SRL" (score: 100) - phone: 0744314438, address: municipiul-12
+  Matched "CENTRUL DE DIAGNOSTIC ȘI TRATAMENT PROVITA SRL" (score: 230) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a, name 96% similar
+  Matched "ELIGON PHARMA SRL" (score: 200) - email domain: eligon.ro, phone: 0722232483, address: ferentari-14
+  Matched "SC DIAMEDICA SRL" (score: 250) - email domain: diamedica.ro, phone: 0723197060, address: dacia-54-2, exact name
+  Matched "ASOCIATIA HELP AUTISM" (score: 100) - address: suter-3-4, exact name
+  Matched "CABINET INDIVIDUAL BOLOLOI DANIELA DOINA" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "CABINET INDIVIDUAL MITREA MARIA GEORGIANA" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "ASOCIATIA SPUNE DA VIETII" (score: 100) - address: suter-3-4, exact name
+  Matched "PSIHOCONEX SRL" (score: 100) - phone: 0773315667, exact name
+  Matched "CABINET INDIVIDUAL DE PSIHOLOGIE SBARNA SIMONA CARMEN" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "ASOCIATIA PENTRU DEZVOLTAREA COPILULUI" (score: 100) - address: suter-3-4, exact name
+  Matched "SAN MED" (score: 100) - phone: 02122392580753108640, exact name
+  Matched "SC SAN MED 2001 SRL" (score: 100) - phone: 02122392580753108640, exact name
+  Matched "ANIMA SPECIALITY MEDICAL SERVICES SRL" (score: 250) - email domain: clinica-anima.ro, phone: 0219838, address: iuliu-220c-6, exact name
+  Matched "SC ANNA CLINICS SRL" (score: 100) - phone: 722602112, address: dacia-54-2
+  Matched "UROCLIN" (score: 100) - email domain: reginamaria.ro
+  Matched "Institutul Cl.Fundeni" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "S.C.Crestina Medicala MUNPOSAN 94 SRL" (score: 80) - address: strwiting-10-1, name 91% similar
+  Matched "Centrul Medical Cl. De Recuperare Neuropsihomotorie pt. copii "Dr. N.Robanescu"" (score: 100) - email domain: reginamaria.ro
+  Matched "SC Euroclinic Hospital SA" (score: 100) - email domain: reginamaria.ro
+  Matched "SC MEDLIFE SA-Grivita" (score: 200) - email domain: medlife.ro, phone: 0219646, address: zăgazului-7
+  Matched "SCGRAL MEDICAL SRL" (score: 250) - email domain: gralmedical.ro, phone: 0213230002, address: traian-79-3, exact name
+  Matched "SCCENTRUL MEDICAL UNIREA SRL" (score: 100) - email domain: reginamaria.ro
+  Matched "SC TINOS CLINIC SRL" (score: 250) - email domain: tinosmedical.ro, phone: 0744596660, address: barca-2-5, exact name
+  Matched "SC Focus Lab Plus SRL" (score: 100) - address: ciresului-1-2, exact name
+  Matched "SC Sanador SRL" (score: 250) - email domain: sanador.ro, phone: 02196990751019142, address: strsevastopol-9-1, exact name
+  Matched "SC Sanamed Hospital SRL" (score: 250) - email domain: sana-med.ro, phone: 0219442, address: alexandru-18-2, exact name
+  Matched "SC West Eye Hospital SRL" (score: 250) - email domain: westeyehospital.ro, phone: 0213206734, address: vitan-137-3, exact name
+  Matched "SC MEDLIFE SA-Zagazului" (score: 200) - email domain: medlife.ro, phone: 0219646, address: zăgazului-7
+  Matched "SC MEDICOVER SRL" (score: 100) - address: pechea-8-1, exact name
+  Matched "Medicover Hospital" (score: 100) - address: pechea-8-1, exact name
+  Matched "Laurus Medical Srl" (score: 100) - address: mihai-100-2, exact name
+  Matched "Fundatia Bucuria Ajutorului" (score: 100) - address: piscului-1-4, exact name
+  Matched "PROMED SYSTEM" (score: 100) - address: targoviste-12a, exact name
+  Matched "Fundatia V Babes" (score: 80) - address: piscului-1-4, name 84% similar
+  Matched "OVERMED MEDICAL CENTER SRL" (score: 150) - email domain: overmed.ro, exact name
+  Matched "MNT HEALTHCARE EUROPE SRL" (score: 100) - email domain: neolife.ro
+  Matched "IMUNOCLASS" (score: 100) - address: baldovin-1, exact name
+  Matched "Sapiens Medical Center" (score: 80) - address: strtudor-9, name 85% similar
+  Matched "Fundatia Hospice Casa Sperantei" (score: 100) - address: piscului-1-4, exact name
+  Matched "PROVITA" (score: 100) - address: strcomana-3a-1, exact name
+  Matched "Casa suter" (score: 100) - address: suter-3-4, exact name
+  Matched "LOTUS MED" (score: 100) - address: marasti-2a-1, exact name
+  Matched "INFOSAN" (score: 100) - address: strpaul-13, exact name
+  Matched "MEDICAL CITY" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "MEDEUROPA" (score: 200) - email domain: medeuropa.ro, phone: 0219971, address: brașov-5
+  Matched "INTERCARDIOCLINIQUE S.R.L." (score: 250) - email domain: intercardioclinique.ro, phone: 0724350064, address: gheorghe-144-2, exact name
+  Matched "DIAMEDICA HOSPITAL S.R.L." (score: 200) - email domain: diamedica.ro, phone: 0723197060, address: dacia-54-2
+  Matched "REVERA ASSISTED S.R.L." (score: 150) - phone: 02122213700751537428, address: gheorghe-8a-1, exact name
+  Matched "SC ELIGON PHARMA SRL" (score: 250) - email domain: eligon.ro, phone: 0722232483, address: ferentari-14, exact name
+  Matched "SC ST LUKAS CLINIC SRL" (score: 100) - email domain: clinicaromgermed.ro
+  Matched "C.M.I. DR. IORDACHE RODICA MELIȚA" (score: 150) - phone: 722248364, address: dudesti-104-3, exact name
+  Matched "SCM POLI-MED APACA" (score: 150) - phone: 0214348003, address: dezrobirii-13-6, exact name
+  Matched "C.M.I. DR. BOLOHAN IONUȚA MIHAELA" (score: 150) - phone: 744122875, address: pravat-12-6, exact name
+  Matched "INSTITUTUL NAȚIONAL PENTRU MEDICINĂ COMPLEMENTARĂ ȘI ALTERNATIVĂ PROF. DR. FLORIN BRĂTILĂ" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "I.N.G.G. ANA ASLAN" (score: 250) - email domain: ana-aslan.ro, phone: 03140582670212114279, address: caldarusani-9-1, exact name
+  Matched "C.M.I. DR. GOLDSTEIN DANIELA VICTORIȚA" (score: 150) - phone: 214136732, address: panduri-20-5, exact name
+  Matched "S.C. ALFA MEDICAL SERVICES S.R.L." (score: 100) - phone: 0319495, exact name
+  Matched "PULS MEDICA S.A." (score: 180) - email domain: pulsmedica.ro, address: intrarea-2, name 87% similar
+  Matched "C.M.I. DR. PLATON ADRIAN" (score: 100) - phone: 0722390029, address: malcoci-4-5
+  Matched "C.M.I. DR. PÂRÂU CORINA SANDA" (score: 150) - phone: 213675757, address: panduri-20b-5, exact name
+  Matched "CENTRUL MEDICAL HUMANITAS S.R.L." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "C.M.I. DR. CONSTANTINESCU MIHAELA IOANA" (score: 150) - phone: 0721239363, address: basarabia-19-2, exact name
+  Matched "C.M.I. DR. GHEORGHIȚA CRISTINA" (score: 150) - phone: 314381935, address: basarabia-19-2, exact name
+  Matched "C.M.I. DR. TURCAN VIORICA" (score: 100) - phone: 0213277279, address: dudesti-104-3
+  Matched "S.C. MEDICOR INTERNAȚIONAL S.R.L." (score: 130) - phone: 0214609848, address: alexandru-20-4, name 96% similar
+  Matched "S.C. MONGIN MEDICAL S.R.L." (score: 150) - phone: 0217463513, address: ghencea-32-6, exact name
+  Matched "C.M.I. DR. DABIJA NATALIA" (score: 100) - phone: 0723238115, address: iuliu-4-4
+  Matched "S.C. ROSANA MEDICAL S.R.L." (score: 150) - email domain: rosanamedical.ro, exact name
+  Matched "S.C SANYS S.R.L." (score: 200) - email domain: sanys.ro, phone: 0788830384, address: metalurgiei-7-4
+  Matched "S.C. MEMENTO MED S.R.L." (score: 150) - phone: 0213260081, address: secuilor-2-4, exact name
+  Matched "C.M.I. DR. MUREȘAN ANCA" (score: 150) - phone: 722662337, address: nicolae-41-3, exact name
+  Matched "C.M.I. DR. BUCUR CLAUDIA" (score: 100) - phone: 0213400335105, address: nicolae-41-3
+  Matched "S.C. GRAL MEDICAL S.R.L." (score: 250) - email domain: gralmedical.ro, phone: 0213230002, address: traian-79-3, exact name
+  Matched "INSTITUTUL ONCOLOGIC PROF DR ALEXANDRU TRESTIOREANU" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "S.C. INTERNAȚIONAL MEDICAL CENTER S.R.L." (score: 150) - phone: 723642114, address: bratianu-52, exact name
+  Matched "INSTITUTUL PNEUMO. MARIUS NASTA" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "DISCOVERY CLINIC S.R.L." (score: 200) - email domain: discoveryclinic.ro, address: olteniței-38a-4, exact name
+  Matched "FUNDAȚIA SF. SPIRIDON VECHI" (score: 150) - email domain: clinicasfspiridon.ro, phone: 0787820066
+  Matched "S.C. SANADOR S.R.L." (score: 250) - email domain: sanador.ro, phone: 02196990751019142, address: strsevastopol-9-1, exact name
+  Matched "S.C. C.M.D.T. PROMEMORIA S.R.L." (score: 100) - email domain: pro-memoria.ro
+  Matched "AIS CLINCS&HOSPITAL S.R.L." (score: 100) - address: sosalexandriei-144-5, exact name
+  Matched "S.C. CENTRUL MEDICAL UNIREA S.R.L." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "S.C. MEDIC LINE BUSINESS HEALTH S.R.L." (score: 100) - phone: 0213128282, exact name
+  Matched "SC ANIMA SPECIALITY MEDICAL SERVICES  SRL" (score: 250) - email domain: clinica-anima.ro, phone: 0219838, address: iuliu-220c-6, exact name
+  Matched "C.M.I. DR. VRABIE RALUCA" (score: 100) - phone: 0754472101, address: pajurei-15-1
+  Matched "S.C. MEDICOVER S.R.L." (score: 100) - address: pechea-8-1, exact name
+  Matched "BAU M.A.N CONSTRUCT S.R.L." (score: 100) - address: strionescu-4-3, exact name
+  Matched "DIAVERUM ROMANIA" (score: 150) - email domain: diaverum.com, address: piața-15-1
+  Matched "C.M.I. DR. ILIAȘ T.CRISTIANA-ELENA" (score: 130) - phone: 214600096, address: constantin-110d-4, name 86% similar
+  Matched "S.C. GYNECOLIFE S.R.L." (score: 150) - phone: 0761379060, address: theodor-18-3, exact name
+  Matched "INSTITUTUL NAȚIONAL DE ENDOCRINOLOGIE CI PARHON" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "S.C. SLIM LIFE S.R.L." (score: 100) - phone: 0761379060, address: wilhelm-18-3
+  Matched "S.C. CABINETELE MEDICALE DR. GLUCK" (score: 130) - phone: 0314156755, address: precupetii-32a-2, name 96% similar
+  Matched "S.C. AKH MEDICAL KLINIC & HOSPITAL S.R.L." (score: 150) - phone: 721506617, address: bran-2-2, exact name
+  Matched "S.C. CABINET ORTOPEDIE EVV S.R.L." (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "S.C. CENTRUL MEDICAL OVERMED S.R.L." (score: 230) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a, name 81% similar
+  Matched "S.C. MEDICUL CASEI S.R.L." (score: 150) - phone: 0314328144, address: drumul-39-6, exact name
+  Matched "PROMED SYSTEM S.R.L." (score: 100) - address: targoviste-12a, exact name
+  Matched "S.C. CENTRUL MEDICAL DR. FURTUNĂ DAN S.R.L." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "MNT HEALTHCARE EUROPE" (score: 180) - email domain: neolife.ro, phone: 0219230, name 84% similar
+  Matched "S.C. FRESENIUS NEPHROCARE ROMANIA S.R.L" (score: 200) - email domain: fmc-ag.com, address: -ploiesti-19-1, exact name
+  Matched "C.M.I. DR. LAZĂR-CONTES RODICA" (score: 150) - phone: 722339610, address: ioan-1d-1, exact name
+  Matched "ANTIAGE CARE S.R.L." (score: 250) - email domain: cmi-drplaton.ro, phone: 721527004, address: intrarea-12-3, exact name
+  Matched "C.M.I. DR. VALERIA RADU" (score: 150) - phone: 212331769, address: clabucet-4-1, exact name
+  Matched "SUPERDIET CLINIC S.R.L." (score: 150) - phone: 0770364216, address: judetului-1-2, exact name
+  Matched "S.C. SIMNOVOMED S.R.L." (score: 150) - phone: 0723999399, address: drumul-96-6, exact name
+  Matched "FUNDAȚIA C.M.U. REGINA MARIA" (score: 150) - email domain: clinicasfspiridon.ro, phone: 0787820066
+  Matched "S.C. CAROL MED CENTER S.R.L." (score: 100) - phone: 0314379451, address: pache-49-2
+  Matched "SC DIABET MED CLINIC S.R.L" (score: 130) - phone: 0766463640, address: sergent-9-5, name 90% similar
+  Matched "S.C. OMNIA MEDICAL CENTER S.R.L." (score: 200) - email domain: omniamedical.ro, address: octavian-14-3, exact name
+  Matched "IMUNOMEDICA PROVITA S.R.L." (score: 250) - email domain: imuno-medica.ro, phone: 0314050350, address: virgiliu-81-1, exact name
+  Matched "S.C. SANACARE VITAL" (score: 100) - phone: 0770615581, address: fratii-56-4
+  Matched "C.M.I. DR. SPIRACHE DANA-MARIA" (score: 150) - phone: 0767049820, address: iuliu-7-6, exact name
+  Matched "CABINETUL DR. DUȚĂ ADRIANA" (score: 100) - phone: 0212118249, address: ardeleni-3a-2
+  Matched "S.C. ONCOMEDICALCLASS S.R.L." (score: 150) - phone: 0213132936, address: parcului-67-1, exact name
+  Matched "C.M.I. DR. CHICU NATALIA" (score: 150) - phone: 0745397014, address: suzana-7-5, exact name
+  Matched "C.M.I. DR. MUNTEANU NICOLETA" (score: 150) - phone: 0745538505, address: magura-58-2, exact name
+  Matched "S.C. PREMIER CLINIC S.R.L." (score: 200) - email domain: premierclinic.ro, phone: 0212329400, address: unirii-57-3
+  Matched "CENTRUL DE SANATATE S.T.B." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "C.M.I. DR. ȘERI ANDREI CRISTIAN" (score: 150) - phone: 0744500159, address: lunguletu-6-2, exact name
+  Matched "S.C. LUKASS DALYRA MEDICALES S.R.L." (score: 150) - phone: 0723371656, address: panduri-15-5, exact name
+  Matched "SC GYNECO LINE EXPERT SRL" (score: 150) - phone: 0721945985, address: gruiului-63, exact name
+  Matched "S.C. A&M.M. CALITATEA VIEȚII S.R.L." (score: 80) - phone: 0310699901, name 92% similar
+  Matched "MĂNESCU MED S.R.L." (score: 150) - phone: 214134365, address: pravat-12-6, exact name
+  Matched "CENTRUL MEDICAL PALEOLOGU SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC KILOSTOP JUNIOR SRL" (score: 250) - email domain: kilostopjunior.ro, phone: 0740709199, address: victoriei-155, exact name
+  Matched "SC CENTRUL MEDICAL ALL4YOU SRL" (score: 230) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a, name 83% similar
+  Matched "DR. HECK S.R.L." (score: 150) - phone: 746223390, address: stefan-228, exact name
+  Matched "HEMOLAB CLINIC S.R.L." (score: 250) - email domain: hemolab.ro, phone: 314254354, address: șoseaua-27a-2, exact name
+  Matched "C.M. FIZIOREIN S.R.L." (score: 150) - phone: 743054565, address: sirenelor-91-5, exact name
+  Matched "RODOCTOR MEDICAL CENTER S.R.L." (score: 250) - email domain: rodoctor.ro, phone: 769697590, address: preciziei-6m-6, exact name
+  Matched "INSTITUTUL NAT.GERONTOLOGIE SI GERIATRIE "ANA ASLAN"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "ALFA MEDICAL SERVICES SRL" (score: 100) - phone: 0319495, exact name
+  Matched "MEDINST DIAGNOSTIC ROMANO-GERMAN SRL" (score: 230) - email domain: medinst.ro, phone: 319902, address: berceni-10-4, name 97% similar
+  Matched "INSTITUTUL NATIONAL DE CERCETARE-DEZVOLTARE IN DOMENIUL PATOLOGIEI SI STIINTELOR BIOMEDICALE "VICTOR BABES"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "KORONA MEDCOM SRL" (score: 150) - phone: 0737565656, address: drumul-38-6, exact name
+  Matched "BIO TERRA MED SRL" (score: 250) - email domain: bioterramed.ro, phone: 0213344266, address: grivitei-3-1, exact name
+  Matched "LOTUS - MED SRL" (score: 80) - address: marasti-2a-1, name 87% similar
+  Matched "MEDCENTER SRL" (score: 250) - email domain: medcenter.ro, phone: 0314032030, address: aeroportului-2-1, exact name
+  Matched "CENTRUL MEDICAL POLIMED SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SCM PAJURA" (score: 150) - phone: 0729805336, address: pajurei-15-1, exact name
+  Matched "CENTRUL MEDICAL SIMONA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "FOCUS LAB PLUS SRL" (score: 100) - address: ciresului-1-2, exact name
+  Matched "HIPERDIA SA" (score: 250) - email domain: hiperdia.ro, phone: 0213021160, address: brasov-31, exact name
+  Matched "CENTRUL MEDICAL MEDICLAB SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL SF. ALEXANDRU SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "MEDICOR INTERNATIONAL SRL" (score: 130) - phone: 0214609848, address: alexandru-20-4, name 96% similar
+  Matched "VALCRI MEDICAL SRL" (score: 100) - phone: 0212430500757069207, exact name
+  Matched "CENTRUL DE DIAGNOSTIC MEDIRA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INTERNATIONAL MEDICAL CENTER SRL" (score: 150) - phone: 0723642114, address: eroilor-15, exact name
+  Matched "SAN MED 2001 SRL" (score: 100) - phone: 02122392580753108640, exact name
+  Matched "CENTRUL MEDICAL PANDURI SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL AIDE-SANTE SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "DISCOVERY CLINIC SRL" (score: 250) - email domain: discoveryclinic.ro, phone: 0213351248, address: olteniței-38a-4, exact name
+  Matched "MEDIC LINE BUSINESS HEALTH SRL" (score: 100) - phone: 0213128282, exact name
+  Matched "CENTRUL MEDICAL NICOMED SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "MEDICALES SERVICII DE SANATATE PREMIUM S.A." (score: 200) - email domain: medicales.ro, phone: 0314329975, address: intrarea-4
+  Matched "SC MED LIFE SA BUCURESTI - SUCURSALA BUCURESTI" (score: 150) - email domain: medlife.ro, phone: 0219646
+  Matched "CENTRUL DE DIAGNOSTIC SI TRATAMENT PROVITA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "FUNDATIA VICTOR BABES" (score: 80) - address: piscului-1-4, name 88% similar
+  Matched "ST LUKAS CLINIC SRL" (score: 250) - email domain: clinicaromgermed.ro, phone: 0213110075, address: plevnei-137-6, exact name
+  Matched "Centrul National Clinic de Recuperare Neuropsihomotorie Copii "Dr. N. Robanescu"" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL PROGRESUL SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INSMC "ALESSANDRESCU RUSESCU"" (score: 150) - phone: 219365, address: lacul-120-2, exact name
+  Matched "INSTITUTUL NATIONAL DE ENDOCRINOLOGIE "C.I. PARHON"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "Institutul Oncologic „Prof. Dr. Al. Trestioreanu”" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INTER HEALTH SYSTEMS S.R.L." (score: 230) - email domain: emeraldmed.ro, phone: 0213082100, address: bucurestilor-87, name 92% similar
+  Matched "LUMICLINIC SRL" (score: 150) - phone: 0213275852, address: nifon-40-4, exact name
+  Matched "ELITE MEDICAL SRL" (score: 250) - email domain: elitemedical.ro, phone: 0733108410, address: mitropolit-13, exact name
+  Matched "LIFE DIAGNOSTIC CENTER S.R.L." (score: 100) - phone: 0764948112, address: malcoci-4-5
+  Matched "LABORATORY OF EXPERIMENTAL MEDICINE L.E.M. SRL" (score: 130) - email domain: lem-medicine.ro, name 81% similar
+  Matched "DONNA MEDPLUS SRL" (score: 100) - phone: 0744314438, address: municipiul-12
+  Matched "CENTRUL MEDICAL MED-AS 2003 SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL EXCELENȚA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "AKH MEDICAL KLINIC & HOSPITAL SRL" (score: 150) - phone: 721506617, address: bran-2-2, exact name
+  Matched "CENTRUL MEDICAL AVANTA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL HORUS SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "MEDICAL EMA LABORATORY SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "HEMOLAB CLINIC SRL" (score: 250) - email domain: hemolab.ro, phone: 314254354, address: șoseaua-27a-2, exact name
+  Matched "CENTRUL DE SĂNĂTATE STB S.A." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "MEMORIAL HEALTHCARE INTERNATIONAL S.R.L." (score: 200) - email domain: memorialmedicalcenter.ro, phone: 0762571174, address: malcoci-2b
+  Matched "SANAMED HOSPITAL S.R.L" (score: 250) - email domain: sana-med.ro, phone: 0219442, address: alexandru-18-2, exact name
+  Matched "CENTRUL MEDICAL DR.FURTUNĂ DAN SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CRESTINA MEDICALA MUNPOSAN '94 SRL" (score: 150) - phone: 0213162050, address: strwiting-10-1, exact name
+  Matched "CENTRUL MEDICAL HUMANITAS SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "ROSANA MEDICAL S.R.L." (score: 200) - email domain: rosanamedical.ro, phone: 03143270520372734499, exact name
+  Matched "CENTRUL MEDICAL OMEGA SCAN SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INSTITUTUL DE.PNEUMOFTIZIOLOGIE "MARIUS NASTA"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "PROBIO ECO EXPERT SRL" (score: 150) - email domain: pro-bio.ro, exact name
+  Matched "ROMGERMED VĂCĂREŞTI SRL" (score: 100) - email domain: clinicaromgermed.ro
+  Matched "CENTRUL MEDICAL BĂNEASA B. SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SCANMED SRL" (score: 200) - email domain: scanmed.ro, phone: 741477477, exact name
+  Matched "INFINITY LIFE MEDICAL S.R.L." (score: 150) - phone: 0775594709, address: intrarea-1a-6, exact name
+  Matched "AIS CLINICS & HOSPITAL SRL" (score: 150) - email domain: aisclinic.ro, exact name
+  Matched "GLOBAL MEDICAL ULTRA S.R.L." (score: 250) - email domain: gmh.ro, phone: 769655331, address: șoseaua-465-3, exact name
+  Matched "AFFIDEA ROMÂNIA SRL" (score: 230) - email domain: affidea.com, phone: 0219338, address: strfinlanda-19-1, name 95% similar
+  Matched "GLOBAL MEDICAL ULTRA" (score: 230) - email domain: gmh.ro, phone: 769655331, address: șoseaua-465-3, name 83% similar
+  Matched "Institutul Clinic Fundeni" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "Institutul National de Diabet, Nutritie si boli Metabolice Prof. Dr. N Paulescu" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "Institutul National de Diabet, Nutritie si boli Metabolice "Prof. Dr. N Paulescu"" (score: 250) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5, exact name
+  Matched "Institutul de Urgenta C.C.Iliescu" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "Institutul de Pneumoftiziologie M. Nasta" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSMC  Rusescu Alessandrescu" (score: 100) - phone: 219365, address: lacul-120-2
+  Matched "Gral Medical" (score: 200) - email domain: gralmedical.ro, phone: 0213230002, address: traian-79-3
+  Matched "Diaverum  Romania" (score: 250) - email domain: diaverum.com, phone: 0212552350, address: piața-15-1, exact name
+  Matched "Fresenius Neprhrocare" (score: 200) - email domain: fmc-ag.com, phone: 0212334268, address: -ploiesti-19-1
+  Matched "MEDLIFE" (score: 150) - email domain: medlife.ro, phone: 0219646
+  Matched "MEMORIAL HEALTHCARE SRL (SPITALUL DE ONCOLOGIE MONZA)" (score: 200) - email domain: memorialmedicalcenter.ro, phone: 0762571174, address: malcoci-2b
+  Matched "SC ATHENA HEALTH SRL" (score: 230) - email domain: metropolitan-hospital.ro, phone: 219676, address: serban-95-4, name 94% similar
+  Matched "SC POEMEDICA SRL" (score: 200) - email domain: poemedica.ro, phone: 0214139387, exact name
+  Matched "SC ALFA MEDICAL SERVICES SRL" (score: 100) - phone: 0319495, exact name
+  Matched "CMI DR.MARINESCU DANA" (score: 100) - address: strtudor-28-2, exact name
+  Matched "CMI DR.MIHET GHERGHINA" (score: 100) - address: strpajurei-15-1, exact name
+  Matched "SOCIETATEA CIVILĂ MEDICALĂ POLI- MED APACA" (score: 100) - phone: 723367188, address: dudești-104-3
+  Matched "CENTRUL CLINIC DE BOLI REUMATISMALE ,, ION STOIA "" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SPITALULUI CLINIC NICOLAE MALAXA" (score: 100) - address: șos-12-2, exact name
+  Matched "INSTITUTUL NAȚIONAL DE GERONTOLOGIE ȘI GERIATRIE "ANA ASLAN"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "SC CENTRUL MEDICAL GORJULUI SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC ROSANA MEDICAL SRL" (score: 200) - email domain: rosanamedical.ro, phone: 03143270520372734499, exact name
+  Matched "SC DELTA MEDICAL SRL" (score: 200) - email domain: deltapromedical.ro, phone: 0316208093, address: caramfil-85a-1
+  Matched "SC MEDICAL CLASS SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "CMI DR.DOROBANTU GEORGETA" (score: 80) - address: nicolae-41-3, name 96% similar
+  Matched "SC CENTRUL MEDICAL EUROSYSTEM MED SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CMI DR.CRISTEA RALUCA CORINA" (score: 130) - phone: 0745103277, address: strcaius-41-5, name 96% similar
+  Matched "SC ECOMED CLINIC SRL" (score: 100) - phone: 02131400540764803090, exact name
+  Matched "SC VALCRI  MEDICAL SRL" (score: 100) - phone: 0212430500757069207, exact name
+  Matched "SOCIETATEA CIVILĂ MEDICALĂ REPER" (score: 100) - phone: 723367188, address: dudești-104-3
+  Matched "SC CENTRUL MEDICAL FIZIOSAN SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC KINESIOMED SRL" (score: 200) - email domain: kinesiomed.ro, phone: 0314043430, exact name
+  Matched "SC MEDIC LINE BUSINESS HEALTH SRL" (score: 100) - phone: 0213128282, exact name
+  Matched "SC BROTAC MEDICAL CENTER SRL" (score: 150) - email domain: brotac.ro, phone: 0219406
+  Matched "SC SANADOR SRL" (score: 250) - email domain: sanador.ro, phone: 02196990751019142, address: strsevastopol-9-1, exact name
+  Matched "SC AIS CLINICS&HOSPITAL SRL" (score: 100) - phone: 02199090735519476, exact name
+  Matched "SC BAU MAN CONSTRUCT SRL" (score: 100) - address: strionescu-4-3, exact name
+  Matched "SC MONDO CLINIC SRL" (score: 150) - phone: 0212241218, address: comuna-104, exact name
+  Matched "SC SPORT DIAGNOSTIC SRL" (score: 100) - phone: 0734250510, exact name
+  Matched "SC CENTRUL MEDICAL BRÂNCUȘI SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC GAMA CLINIC CENTER SRL" (score: 180) - email domain: fortiusmedical.ro, phone: 0374988838, name 82% similar
+  Matched "CENTRUL MEDICAL DE DIAGNOSTIC ȘI TRATAMENT PROMEMORIA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC GDARMED G&G SRL" (score: 100) - phone: 0744565452, exact name
+  Matched "SC ORTOKINETIC UCG SRL" (score: 100) - email domain: ortokinetic.ro
+  Matched "SES CENTRUL DE RECUPERARE MEDICINA FIZICA SI BALNEOLOGIE" (score: 100) - address: strgheorghe-102-1, exact name
+  Matched "SC BIO ORTOCLINIC SRL" (score: 200) - email domain: bio-ortoclinic.ro, phone: 0754060060, exact name
+  Matched "SC KINETO CONSULT SRL" (score: 100) - email domain: kinetoconsult.ro
+  Matched "SC EFICIENT TERAPY SRL" (score: 100) - phone: 0760149941, exact name
+  Matched "SC WELLCARE SRL" (score: 150) - phone: 0771235235, address: bela-4-2, exact name
+  Matched "CENTRUL MEDICAL PRAIN SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL SFÂNTUL TEODOSIE SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL SFÂNTUL ANTONIE SRL" (score: 230) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a, name 86% similar
+  Matched "CENTRUL DE RECUPERARE MEDICALĂ ASCLEPIUS SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL DE SĂNĂTATE "SFÂNTUL NECTARIE" SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL DE RECUPERARE MEDICALĂ RMFB SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC KINETO CONSULT NORDULUI SRL" (score: 150) - email domain: kinetoconsult.ro, phone: 0727843402
+  Matched "SC PANDORA  MEDICAL SRL" (score: 100) - email domain: pandoramedical.ro
+  Matched "SC MOBILMED SRL" (score: 100) - phone: 0314326760, exact name
+  Matched "SC TONUS PLUS SRL" (score: 100) - phone: 0212506070, exact name
+  Matched "SC A&M.M CALITATEA VIEȚII SRL" (score: 100) - phone: 0310699901, exact name
+  Matched "SC FIZIOKINETO CLINIC MEDICA SRL" (score: 100) - phone: 0771174012, exact name
+  Matched "SC CENTRUL MEDICAL SANA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC HOPE MEDICAL CLINIC SRL" (score: 200) - email domain: hopekineto.ro, phone: 0733003008, exact name
+  Matched "SC LABORATORY OF EXPERIMENTAL MEDICINE L.E.M. SRL" (score: 200) - email domain: lem-medicine.ro, phone: 0724006799, exact name
+  Matched "SC RECRUMEDICA G&D SRL" (score: 100) - phone: 0774696031, exact name
+  Matched "SC IDEAL CLINIC SRL" (score: 100) - phone: 03106993640770683387, exact name
+  Matched "SC PROBIO ECO EXPERT SRL" (score: 150) - email domain: pro-bio.ro, exact name
+  Matched "SC MAX RADIOLOGIE RO MEDICAL SRL" (score: 100) - phone: 0754806756, exact name
+  Matched "CENTRUL DE ORTOPEDIE PEDIATRICA ROSANA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "POSTURO FIT SRL" (score: 100) - email domain: kinetoconsult.ro
+  Matched "SC HIPERDIA SA" (score: 250) - email domain: hiperdia.ro, phone: 0213021160, address: brasov-31, exact name
+  Matched "KOLY MEDICAL SRL" (score: 100) - phone: 0726395577, address: strsold-43-2
+  Matched "CENTRUL MEDICAL PRAIN PENTRU REDAREA AUZULUI SI INFATISARII NORMALE SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "ELITE DENTAL HUB SRL" (score: 200) - email domain: elitemedical.ro, phone: 0733108410, address: mitropolit-13
+  Matched "ELIGON PHARMA" (score: 200) - email domain: eligon.ro, phone: 0722232483, address: ferentari-14
+  Matched "SC KINETOVIVA SRL" (score: 150) - phone: 723390964, address: orșova-6-6, exact name
+  Matched "SC SANO REHAB SRL" (score: 100) - phone: 745985048, address: dorobanților-103-1
+  Matched "SC MEDVIT CENTER SRL" (score: 250) - email domain: medvit.ro, phone: 760633848, address: tomesti-10a-4, exact name
+  Matched "SC LIFE CONCEPT MED  SRL" (score: 100) - phone: 0764948112, address: malcoci-4-5
+  Matched "SC ACTIVE LIFE THERAPY MEDICAL SRL" (score: 200) - email domain: activelife.ro, phone: 722166554, address: făurei-5-1
+  Matched "SC LOCALMEDIC SRL" (score: 250) - email domain: localmedic.ro, phone: 784377399, address: intrarea-1-4, exact name
+  Matched "SC EVA SANO MED" (score: 100) - phone: 722675150, address: sold-3-5
+  Matched "THE INSTITUT OF HEALT HEALTH SRL" (score: 250) - email domain: renewinstitute.ro, phone: 742155977, address: intrarea-1-1, exact name
+  Matched "ANIMA SPECIALITY MEDICAL" (score: 200) - email domain: clinica-anima.ro, phone: 0219838, address: iuliu-220c-6
+  Matched "CENTRUL MEDICAL UNIREA SRL (preluat DELTA)" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "POLICLINICA CCBR SRL" (score: 150) - email domain: policlinicababanovac.ro, phone: 07702183360748175572
+  Matched "DIAVERUM" (score: 200) - email domain: diaverum.com, phone: 0212552350, address: piața-15-1
+  Matched "OCULARCARE SRL" (score: 150) - phone: 0722556222, address: ion-128-1, exact name
+  Matched "CMI DR. BURGHELEA ANCA IOSEFINA - ORL" (score: 250) - email domain: medicorl.ro, phone: 0744388377, address: masina-47-2, exact name
+  Matched "CMI DR. MOGOS DOINA - ORL" (score: 150) - phone: 0745934892, address: iancului-3-2, exact name
+  Matched "CMI DR. TUDORICA STELUTA - ENDOCRINOLOGIE" (score: 150) - phone: 0212434686, address: masina-47-2, exact name
+  Matched "CMI DR. IORDACHE RODICA MELITA - ENDOCRINOLOGIE, ECHOGRAFIE ENDOCRINA" (score: 150) - phone: 0722248364, address: dudesti-104-3, exact name
+  Matched "CMI DR. GHINEA GRANIA - DERMATO-VENEROLOGIE" (score: 150) - phone: 0314382850, address: panduri-5, exact name
+  Matched "CMI DR. ANINISI IRINA - ORL" (score: 150) - phone: 0744481584, address: povernei-42-1, exact name
+  Matched "CMI DR. MANOLE GAVRILESCU LAURENTIU STEFAN - ORL" (score: 250) - email domain: itq.ro, phone: 0214134036, address: cetatea-12-6, exact name
+  Matched "INSTITUTUL DE OCROTIRE A MAMEI SI COPILULUI "DR. ALFRED" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "INSTITUTUL NATIONAL PENTRU MEDICINA COMPLEMENTARA SI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "CENTRUL METODOLOGIC DE REUMATOLOGIE "Dr. ION STOIA"" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SCM POVERNEI" (score: 150) - phone: 0213139561, address: povernei-42-1, exact name
+  Matched "Institutul National de Geriatrie şi Gerontologie Ana Aslan" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "S.C. KORONA MEDCOM S.R.L." (score: 150) - phone: 0737565656, address: drumul-38-6, exact name
+  Matched "SC PULS MEDICA SRL" (score: 230) - email domain: pulsmedica.ro, phone: 0219290, address: intrarea-2, name 87% similar
+  Matched "CMI DR. GABRIAN VIORICA - DERMATO-VENEROLOGIE" (score: 250) - email domain: cmi-dermato.ro, phone: 0723272446, address: iancului-3-2, exact name
+  Matched "INSTITUTUL NATIONAL DE RECUPERARE, MEDICINA FIZICA SI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "MEDICAL AUDIFON SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "INSTITUTUL DE DIABET, NUTRITIE SI BOLI METABOLICE "DR. N." (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "CMI DR. PLATON ADRIAN - CHIRURGIE GENERALA" (score: 100) - phone: 0722390029, address: malcoci-4-5
+  Matched "CMI DR. MURESANU LIDIA IRINEL - DERMATO-VENEROLOGIE" (score: 100) - phone: 0214232080, address: malcoci-4-5
+  Matched "SC MEDCENTER SRL" (score: 250) - email domain: medcenter.ro, phone: 0314032030, address: aeroportului-2-1, exact name
+  Matched "CMI DR. DOBRESCU CARMEN - MEDICINA INTERNA" (score: 100) - phone: 0213167166, address: regiei-8-6
+  Matched "SC CRESTINA MEDICALA MUNPOSAN '94 SRL" (score: 150) - phone: 0213162050, address: strwiting-10-1, exact name
+  Matched "SC BINAFARM SRL" (score: 150) - phone: 0212422688, address: luigi-75-2, exact name
+  Matched "SC CENTRUL MEDICAL ORTOCONSULT SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "Centrul Medical Med-AS 2003 SRLP" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CMI DR. CONSTANTINESCU MIHAELA IOANA" (score: 150) - phone: 0721239363, address: basarabia-19-2, exact name
+  Matched "CMI DR TURCAN VIORICA - OBSTETRICA-GINECOLOGIE" (score: 100) - phone: 0213277279, address: dudesti-104-3
+  Matched "CMI DR. FONTUL MIHAELA - OFTALMOLOGIE" (score: 100) - phone: 0212556529, address: pescarusului-13-2
+  Matched "CMI DR. TRIFAN IULIA - ENDOCRINOLOGIE" (score: 100) - phone: 0212118249, address: ardeleni-3a-2
+  Matched "SC MEDICOR INTERNATIONAL SRL" (score: 150) - phone: 0214609848, address: alexandru-20-4, exact name
+  Matched "SC MONGIN MEDICAL SRL" (score: 150) - phone: 0217463513, address: ghencea-32-6, exact name
+  Matched "CMI DR. CIOBANU MAGDALENA CLAUDIA - PEDIATRIE," (score: 100) - phone: 0723230985, address: iuliu-7-6
+  Matched "CMI DR. COTOFAN ZINAIDA - ENDOCRINOLOGIE" (score: 150) - phone: 0214206055, address: suzana-7-5, exact name
+  Matched "CMI DR. DABIJA NATALIA - OBSTETRICA-GINECOLOGIE," (score: 100) - phone: 0723238115, address: iuliu-4-4
+  Matched "SC ANIMA SPECIALITY MEDICAL SERVICES SRL" (score: 200) - email domain: clinica-anima.ro, phone: 0219838, address: iuliu-220c-6
+  Matched "S.C SANYS MEDICAL S.R.L." (score: 200) - email domain: sanys.ro, phone: 0788830384, address: metalurgiei-7-4
+  Matched "SC MEMENTO MED SRL" (score: 150) - phone: 0213260081, address: secuilor-2-4, exact name
+  Matched "SC IOANA MEDICAL CENTER SRL" (score: 250) - email domain: ioanamed.ro, phone: 0212233810, address: alexandru-81-1, exact name
+  Matched "SC HUMANITAS CLINIC SRL" (score: 100) - phone: 0216676577, address: subcetate-41-1
+  Matched "CMI DR. STAN AURELIA MIMI - CARDIOLOGIE" (score: 250) - email domain: stan.ro, phone: 0790350479, address: nicolae-41-3, exact name
+  Matched "CMI DR. BAZAVAN DANIELA CRISTINA DOINA - PEDIATRIE" (score: 250) - email domain: yahoo.ca, phone: 0744433262, address: nicolae-41-3, exact name
+  Matched "CMI DR. RIZEA DANIELA - OFTALMOLOGIE" (score: 250) - email domain: cabmed.ro, phone: 0213400335120, address: nicolae-41-3, exact name
+  Matched "CMI DR. BUCUR CLAUDIA - GASTROENTEROLOGIE" (score: 100) - phone: 0213400335105, address: nicolae-41-3
+  Matched "CMI DR. PETRE SANDOR LOUISSE MARY - PSIHIATRIE" (score: 100) - phone: 0213400335162, address: nicolae-41-3
+  Matched "CMI DR. IONESCU MARIT MARILENA - MEDICINA INTERNA," (score: 100) - phone: 0213400335104, address: nicolae-41-3
+  Matched "SC GRAL MEDICAL SRL" (score: 200) - email domain: gralmedical.ro, phone: 0213230002, address: traian-79-3
+  Matched "INSTITUTUL ONCOLOGIC BUCURESTI "PR. DR. AL. TRESTIOREANU"" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "SC CABINET DE DIABET ZAHARAT SI OBEZITATE MOSILOR SRL" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "SC AFFIDEA ROMANIA SRL" (score: 230) - email domain: affidea.com, phone: 0219338, address: strfinlanda-19-1, name 95% similar
+  Matched "SC AMICUS MED SRL" (score: 250) - email domain: amicusmed.ro, phone: 0212508585, address: iancului-17-2, exact name
+  Matched "SC INTERNATIONAL MEDICAL CENTER SRL" (score: 150) - phone: 0723642114, address: eroilor-15, exact name
+  Matched "Institutul de Pneumologie Marius Nasta" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "SC CENTRUL MEDICAL ROMAR SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC DIABET MED SRL" (score: 100) - phone: 0766463640, address: sergent-9-5
+  Matched "SC DISCOVERY CLINIC SRL" (score: 250) - email domain: discoveryclinic.ro, phone: 0213351248, address: olteniței-38a-4, exact name
+  Matched "Fundatia Sfantul Spiridon Vechi" (score: 80) - address: piscului-1-4, name 97% similar
+  Matched "SC AIS CLINICS & HOSPITAL SRL" (score: 250) - email domain: aisclinic.ro, phone: 0219909, address: alexandriei-144-5, exact name
+  Matched "CMI DR. BRINZA GABRIELA - ENDOCRINOLOGIE" (score: 100) - phone: 0212556529, address: pescarusului-13-2
+  Matched "CMI DR. BUGHEANU MIHAELA - PSIHIATRIE" (score: 250) - email domain: rdslink.ro, phone: 0734251542, address: căpâlna-4-1, exact name
+  Matched "SC MEDICAL SIMBOL SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "EASYDIET SRL" (score: 250) - email domain: easydiet.ro, phone: 0726061096, address: sontu-3-1, exact name
+  Matched "SC TITAN MEDICAL SRL" (score: 250) - email domain: eucardios.ro, phone: 0735126185, address: vigilentei-4-5, exact name
+  Matched "SC CENTRUL MEDICAL UNIREA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC BIO TERRA MED   SRL" (score: 250) - email domain: bioterramed.ro, phone: 0213344266, address: grivitei-3-1, exact name
+  Matched "SC DELTA HEALTH CARE SRL" (score: 200) - email domain: deltapromedical.ro, phone: 0316208093, address: caramfil-85a-1
+  Matched "SC MEDIC LINE BUSINESS HEALTH SRL / BARBUVACARESCU SI BRANDUSELOR" (score: 100) - phone: 0213128282, exact name
+  Matched "CMI DR. VRABIE RALUCA - MEDICINA INTERNA," (score: 100) - phone: 0754472101, address: pajurei-15-1
+  Matched "SC CENTRUL MEDICAL " PRAIN " PENTRU REDAREA AUZULUI SI" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC SANAMED HOSPITAL SRL" (score: 250) - email domain: sana-med.ro, phone: 0219442, address: alexandru-18-2, exact name
+  Matched "CMI DR. CRĂCIUN RUXANDA CĂTĂLINA - ACUPUNCTURĂ" (score: 150) - phone: 0723326523, address: iuliu-6, exact name
+  Matched "MONDO CLINIC SRL" (score: 150) - phone: 0212241218, address: comuna-104, exact name
+  Matched "SC WEST EYE Clinic SRL" (score: 200) - email domain: westeyehospital.ro, phone: 0213206734, address: vitan-137-3
+  Matched "SC CENTRUL MEDICAL ARENA SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC BAU M.A.N CONSTRUCT SRL" (score: 100) - address: strionescu-4-3, exact name
+  Matched "DELTA MED S.R.L." (score: 200) - email domain: deltapromedical.ro, phone: 0316208093, address: caramfil-85a-1
+  Matched "CABINETUL DR. TRIFAN LAURA DARIA-NEUROLOGIE CMI" (score: 100) - phone: 0212118249, address: ardeleni-3a-2
+  Matched "S.C. DIAVERUM ROMANIA SRL - FUNDENI" (score: 200) - email domain: diaverum.com, phone: 0212552350, address: piața-15-1
+  Matched "CMI DR. ILIAS CRISTINA ELENA" (score: 80) - address: constantin-110d-4, name 86% similar
+  Matched "FUNDATIA DR. VICTOR BABES" (score: 80) - address: piscului-1-4, name 88% similar
+  Matched "SC ROMGERMED VACARESTI SRL" (score: 230) - email domain: clinicaromgermed.ro, phone: 740304249, address: plevnei-137c-6, name 87% similar
+  Matched "SC GYNECOLIFE SRL" (score: 150) - phone: 0761379060, address: theodor-18-3, exact name
+  Matched "SC ST LUKAS CLINIC S.R.L." (score: 100) - email domain: clinicaromgermed.ro
+  Matched "INSTITUTUL DE ENDOCRINOLOGIE "DR.  C. I.  PARHON" BUCURESTI" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "SC SLIM LIFE SRL" (score: 150) - phone: 0761379060, address: wilhelm-18-3, exact name
+  Matched "SC CABINETELE MEDICALE DR. GLUK" (score: 130) - phone: 0314156755, address: precupetii-32a-2, name 96% similar
+  Matched "SC OVERMED MEDICAL CENTER SRL" (score: 250) - email domain: overmed.ro, phone: 0722389847, address: ştefan-53-1, exact name
+  Matched "SC MEDICUL CASEI" (score: 100) - phone: 0314328144, address: drumul-39-6
+  Matched "S.C. PROMED SYSTEM S.R.L." (score: 100) - address: targoviste-12a, exact name
+  Matched "MEDICALES SERVICII DE SĂNĂTATE SRL" (score: 200) - email domain: medicales.ro, phone: 0314329975, address: intrarea-4
+  Matched "SC ORTOMARAMEDICAL SRL" (score: 250) - email domain: yahoo.fr, phone: 0732861222, address: garleni-3-6, exact name
+  Matched "S.C. MEDLIFE S.R.L." (score: 200) - email domain: medlife.ro, phone: 0219646, address: zăgazului-7
+  Matched "SC MEDICOVER HOSPITAL SRL" (score: 80) - address: pechea-8-1, name 96% similar
+  Matched "SC MNT HEALTHCARE EUROPE SRL" (score: 180) - email domain: neolife.ro, phone: 0219230, name 84% similar
+  Matched "S.C. FRESENIUS NEPHROCARE ROMANIA S.R.L." (score: 200) - email domain: fmc-ag.com, phone: 0212334268, address: -ploiesti-19-1
+  Matched "SC LOTUS MED SRL" (score: 80) - address: marasti-2a-1, name 87% similar
+  Matched "SC SAPIENS MEDICAL CENTER SRL" (score: 80) - address: strtudor-9, name 85% similar
+  Matched "SC MEDICAL CITY BLUE SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "SC ANTIAGE CARE SRL" (score: 250) - email domain: cmi-drplaton.ro, phone: 721527004, address: intrarea-12-3, exact name
+  Matched "SC ENDOGASTROHEP SRL" (score: 250) - email domain: endo-gastro.ro, phone: 0314382196, address: vitan-28-3, exact name
+  Matched "SC CM PROGRESUL SRL" (score: 250) - email domain: clinicaprogresul.ro, phone: 0746357544, address: giurgiului-65-4, exact name
+  Matched "SC GAMA CLINIC CENTER" (score: 180) - email domain: fortiusmedical.ro, phone: 0374988838, name 82% similar
+  Matched "SC BRATU MED SRL" (score: 250) - email domain: bratumed.ro, phone: 0756431988, address: lacul-33, exact name
+  Matched "SC PROFIDIAB SRL" (score: 250) - email domain: profidiab.ro, phone: 0372700009, address: giurgiului-28-4, exact name
+  Matched "SC CROSS MEDICAL SRL" (score: 100) - phone: 0214232082, address: malcoci-4-5
+  Matched "SC CM MEDICLAB SRL" (score: 250) - email domain: mediclab.ro, phone: 0214113275, address: panduri-20b-5, exact name
+  Matched "SC LUMICLINIC SRL" (score: 150) - phone: 0213275852, address: nifon-40-4, exact name
+  Matched "SC SUPERDIET CLINIC SRL" (score: 150) - phone: 0770364216, address: judetului-1-2, exact name
+  Matched "SC DIABET CONTROL" (score: 100) - phone: 0766463640, address: sergent-9-5
+  Matched "SC DIGEST MED SRL" (score: 200) - email domain: digestmed.ro, phone: 0743344378, exact name
+  Matched "SC LIFE DEVELOPMENT GROUP SRL" (score: 100) - phone: 0764948112, address: malcoci-4-5
+  Matched "SC SIMNOVOMED SRL" (score: 150) - phone: 0723999399, address: drumul-96-6, exact name
+  Matched "SPIT CL FILANTROPIA" (score: 250) - email domain: spitalulfilantropia.ro, phone: 0213128150, address: ion-11-1, exact name
+  Matched "SC CM BELANIMA SRL" (score: 250) - email domain: bellanima.ro, phone: 0735151153, address: stockholm-5-1, exact name
+  Matched "SCDT PROVITA SRL" (score: 100) - email domain: centrul-provita.ro
+  Matched "SC ALBION MEDICAL SRL" (score: 250) - email domain: albionmedical.ro, phone: 0217965110, address: dimitrie-14-2, exact name
+  Matched "SC OCULARCARE SRL" (score: 150) - phone: 0722556222, address: ion-128-1, exact name
+  Matched "SC CAROL MED SA" (score: 100) - phone: 0314379451, address: pache-49-2
+  Matched "SC DIABET MED. CLINA SRL" (score: 100) - phone: 0766463640, address: sergent-9-5
+  Matched "SC PRO-CORD SRL" (score: 250) - email domain: procord.ro, phone: 0745323492, address: septembrie-87-5, exact name
+  Matched "LSM MEDICAL CLINIC" (score: 250) - email domain: lsmedicalclinic.ro, phone: 0758063242, address: gheorghe-1-3, exact name
+  Matched "SC OMNIA MEDICAL CENTER SRL" (score: 250) - email domain: omniamedical.ro, phone: 0213230034, address: octavian-14-3, exact name
+  Matched "S.C. CENTRUL MEDICAL POLIMED S.R.L" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "VICTORIA MEDICAL CENTER" (score: 230) - email domain: med-as.ro, phone: 0742766878, address: straurora-7, name 85% similar
+  Matched "SC HISTRIA MEDICAL SRL" (score: 150) - phone: 0724912174, address: cetatea-6, exact name
+  Matched "SC IMUNOMEDICA PROVITA SRL" (score: 250) - email domain: imuno-medica.ro, phone: 0314050350, address: virgiliu-81-1, exact name
+  Matched "SC DIAPEDIS MEDICAL SRL" (score: 250) - email domain: diapedis.ro, phone: 0212525068, address: boldești-5, exact name
+  Matched "CENTRUL MEDICAL SANART SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SANACARE VITAL SRL" (score: 100) - phone: 0770615581, address: fratii-56-4
+  Matched "CMDT HUMANITAS SRL" (score: 150) - email domain: pro-memoria.ro, phone: 07262949450213106639
+  Matched "CMI DR SPIRACHE DANA-MARIA" (score: 150) - phone: 0767049820, address: iuliu-7-6, exact name
+  Matched "SC NUTRIMED SRL" (score: 100) - phone: 0216191281, address: petru-60a-2
+  Matched "VASCULARTE INTERDISCIPLINAR CLINICS SRL" (score: 250) - email domain: vascularte.ro, phone: 0722353713, address: washinton-48a-1, exact name
+  Matched "CABINETUL DR.DUTA ADRIANA-CHIRURGIE PEDIATRICA/CMI" (score: 100) - phone: 0212118249, address: ardeleni-3a-2
+  Matched "SC CENTRUL DE ORTOPEDIE PEDIATRICA ROSANA" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CABINET MARPOPLIFE SRL" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "SC LAURUS MEDICAL SRL" (score: 100) - address: mihai-100-2, exact name
+  Matched "CENTRUL MEDICAL CLINIC DE RECUPERARE NEUROPSIHOMOTORIE PENTRU COPII ,,DR. N.ROBANESCU ,," (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "INTER HEALTH SYSTEMS SA" (score: 230) - email domain: emeraldmed.ro, phone: 0213082100, address: bucurestilor-87, name 92% similar
+  Matched "CENTRULUI DE SANATATE MULTIFUNCTIONAL "SFANTUL NECTARIE"" (score: 250) - email domain: nectarie6.ro, phone: 0319593, address: uverturii-81-6, exact name
+  Matched "SC CENTRUL MEDICAL GAROMED SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "FUNDATIA HOSPICE CASA SPERANTEI" (score: 100) - address: piscului-1-4, exact name
+  Matched "SC DERMONE SRL" (score: 250) - email domain: derm-one.ro, phone: 0758555577, address: episcopul-15-4, exact name
+  Matched "AMBI MEDICA SRL" (score: 250) - email domain: ambimedica.com, phone: 0786015298, address: weiner-66d, exact name
+  Matched "SC INFOSAN SRL" (score: 100) - address: strpaul-13, exact name
+  Matched "SC CENTRUL   MEDICAL SYNPRAX SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "WELLCARE SRL" (score: 150) - phone: 0771235235, address: bela-4-2, exact name
+  Matched "CMI DR. CHICU NATALIA" (score: 150) - phone: 0745397014, address: suzana-7-5, exact name
+  Matched "CMI DR. MUNTEANU NICOLETA" (score: 150) - phone: 0745538505, address: magura-58-2, exact name
+  Matched "ELITE MEDICAL S.R.L," (score: 200) - email domain: elitemedical.ro, phone: 0733108410, address: mitropolit-13
+  Matched "PANDORA MEDICAL" (score: 150) - email domain: pandoramedical.ro, phone: 02134130980732263626
+  Matched "PREMIER CLINIC SRL" (score: 250) - email domain: premierclinic.ro, phone: 0212329400, address: unirii-57-3, exact name
+  Matched "INFINITY LIFE MEDICAL SRL" (score: 150) - phone: 0775594709, address: intrarea-1a-6, exact name
+  Matched "SC NOBLESSE MEDICAL CLINIQUE SRL" (score: 250) - email domain: noblessemedical.ro, phone: 0770291270, address: baltagului-7c-5, exact name
+  Matched "CENTRUL DE SANATATE STB SA" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CMI DR ȘERI ANDREI CRISTIAN" (score: 150) - phone: 0744500159, address: lunguletu-6-2, exact name
+  Matched "SC KINETTO LAND SRL" (score: 100) - email domain: ortokinetic.ro
+  Matched "CABINET MEDICAL ERIDAN" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "SC LUKASS DALYRA MEDICALES SRL" (score: 150) - phone: 0723371656, address: panduri-15-5, exact name
+  Matched "SC CM NICOMED SRL" (score: 100) - email domain: nicomed.ro
+  Matched "PRIMED MEDICINE OMC SRL" (score: 250) - email domain: primed.ro, phone: 0319982, address: arefu-5, exact name
+  Matched "MEDICAL OFTALMO DIAGNOSTIC" (score: 100) - email domain: centrul-provita.ro
+  Matched "CENTRUL MEDICAL BANEASA B" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC DONNA MEDPLUS SRL" (score: 150) - phone: 0744314438, address: municipiul-12, exact name
+  Matched "SC DERMASTYELE SRL" (score: 250) - email domain: drleventercentre.com, phone: 0722304373, address: monetariei-8-1, exact name
+  Matched "MEMORIAL MEDICAL CENTER SRL" (score: 200) - email domain: memorialmedicalcenter.ro, phone: 0762571174, address: malcoci-2b
+  Matched "MEDICUS SKINZONE SRL" (score: 250) - email domain: medicus-skinzone.ro, phone: 0728246403, address: victor-42, exact name
+  Matched "A&M.M. CALITATEA VIRTII SRL" (score: 80) - phone: 0310699901, name 92% similar
+  Matched "SC DIAB MED CONSULT SRL" (score: 250) - email domain: reteauamedicalavictoria, phone: 0219232, address: regina-59-5, exact name
+  Matched "PERFECT EYE VISION SRL" (score: 100) - phone: 0727748617, address: iuliu-7-6
+  Matched "DIAMEDICA HOSPITAL SRL" (score: 250) - email domain: diamedica.ro, phone: 0723197060, address: dacia-54-2, exact name
+  Matched "SC DOCTOR ANGHEL MEDICAL CENTER SRL" (score: 100) - phone: 0721169121, address: teodor-51-3
+  Matched "HOPE MEDICAL CLINIC SRL" (score: 250) - email domain: hopekineto.ro, phone: 0733003008, address: foisorului, exact name
+  Matched "NOVO OPTYPRO LIGHT SRL" (score: 100) - phone: 0214105470, address: cpt-24-5
+  Matched "MINDGARDEN SRL" (score: 250) - email domain: clinicamindgarden.ro, phone: 0746217000, address: dristorului-91-3, exact name
+  Matched "LABORATORY OF EXPERIMENTAL MEDICINE L.E.M." (score: 180) - email domain: lem-medicine.ro, phone: 0724006799, name 91% similar
+  Matched "MEDMIND SRL" (score: 250) - email domain: helpautism.ro, phone: 0711070932, address: diligenței-13-3, exact name
+  Matched "SC POLICLINICA BABA NOVAC SRL" (score: 150) - email domain: policlinicababanovac.ro, phone: 07702183360748175572
+  Matched "SC MEDI PRO CONSULT" (score: 100) - email domain: medipro.ro
+  Matched "AMA MEDICAL CENTER SRL" (score: 250) - email domain: ama-medical.ro, phone: 744393889, address: odobeşti-3, exact name
+  Matched "CM ENDGLOBER SRL" (score: 250) - email domain: drconstantin.ro, phone: 0721030099, address: brasov-61, exact name
+  Matched "CENTRUL MEDICAL GORJULUI SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "ALI CRANTA MEDICAL CENTER S.R.L" (score: 250) - email domain: yahoo.co.ok, phone: 0724284956, address: faurei-1-1, exact name
+  Matched "MIND HEALTH CENTER SRL" (score: 100) - phone: 773301506, address: pantelimon-2
+  Matched "S.C. POEMEDICA S.R.L." (score: 200) - email domain: poemedica.ro, phone: 0214139387, exact name
+  Matched "S.C. REMED CLINIC S.R.L." (score: 100) - phone: 02172515550745152816, exact name
+  Matched "S.C. DELTA MEDICAL S.R.L." (score: 200) - email domain: deltapromedical.ro, phone: 0316208093, address: caramfil-85a-1
+  Matched "CMI DR. DOROBANTU GEORGETA" (score: 130) - phone: 0213400335166, address: nicolae-41-3, name 96% similar
+  Matched "CMI DR CRISTEA RALUCA CORINA" (score: 80) - phone: 0745103277, name 96% similar
+  Matched "SC CENTRUL MEDICAL BRANCUSI SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC CM SF ANTONIE SRL" (score: 150) - email domain: andreev.ro, phone: 0770624598
+  Matched "SC CR RMFB SRL" (score: 150) - email domain: andreev.ro, phone: 0770624598
+  Matched "S.C.KINETO CONSULT NORDULUI S.R.L." (score: 100) - email domain: kinetoconsult.ro
+  Matched "S.C. MOBILMED S.R.L." (score: 100) - phone: 0314326760, exact name
+  Matched "S.C. TONUS PLUS S.R.L." (score: 100) - phone: 0212506070, exact name
+  Matched "S.C. FIZIOLIFE ESTETIQUE SRL" (score: 100) - phone: 07608038740213275579, exact name
+  Matched "S.C. FIZIOKINETO CLINIC MEDICA SRL" (score: 100) - phone: 0771174012, exact name
+  Matched "S.C. RECRUMEDICA G&D SRL" (score: 100) - phone: 0774696031, exact name
+  Matched "SC SOCIETATEA MEDICALA DINU PETRU SI FIII SRL" (score: 100) - phone: 723367188, address: dudești-104-3
+  Matched "CENTRUL MEDICAL PLATINUM SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "CENTRUL MEDICAL HUMANITY LIFE S.R.L." (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "BIODERM MEDICAL CENTER SRL" (score: 250) - email domain: bioderm.ro, phone: 722338383, address: floreasca-46-1, exact name
+  Matched "SC PREMIER EYE CARE SRL" (score: 200) - email domain: premierclinic.ro, phone: 0212329400, address: unirii-57-3
+  Matched "DR HECK SRL" (score: 150) - phone: 746223390, address: stefan-228, exact name
+  Matched "ArtHope SRL" (score: 150) - email domain: arthope.ro, phone: 721961020
+  Matched "Hemolab Clinic SRL" (score: 250) - email domain: hemolab.ro, phone: 314254354, address: șoseaua-27a-2, exact name
+  Matched "DOC (Doctor Pmnia Casuum) SRL" (score: 250) - email domain: somnolog.ro, phone: 737392428, address: leonte-11-5, exact name
+  Matched "MEDICAL HUB EH SRL" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "Anna Clinic" (score: 100) - phone: 722602112, address: dacia-54-2
+  Matched "SC BLUMED CONSULT SRL" (score: 100) - phone: 723595252, address: aristizza-15-4
+  Matched "EUROCLINIC SRL 2002" (score: 100) - email domain: reginamaria.ro
+  Matched "CM Fiziorein SRL" (score: 150) - phone: 743054565, address: sirenelor-91-5, exact name
+  Matched "RODOCTOR Medical Center SRL" (score: 250) - email domain: rodoctor.ro, phone: 769697590, address: preciziei-6m-6, exact name
+  Matched "Clinicile Nicomed SRL" (score: 100) - email domain: nicomed.ro
+  Matched "Personal Genetics SRL" (score: 250) - email domain: personalgenetics.ro, phone: 213110793, address: frumoasă-4-1, exact name
+  Matched "SC Global Medical Ultra SRL" (score: 230) - email domain: gmh.ro, phone: 769655331, address: șoseaua-465-3, name 83% similar
+  Matched "Professional Imaging Center Srl" (score: 100) - email domain: reteauamedicalavictoria.ro
+  Matched "Neuropain Clinic SRL" (score: 250) - email domain: inclinic.ro, phone: 753155255, address: malcoci-2b, exact name
+  Matched "Centrul Medical dr. Dănciulescu Delia" (score: 100) - email domain: reginamaria.ro
+  Matched "SC EUROCLINIC HOSPITAL SRL" (score: 100) - email domain: reginamaria.ro
+  Matched "SC EUROSANITY SRL" (score: 250) - email domain: eurosanity.ro, phone: 725210604, address: plevnei-44-1, exact name
+  Matched "VISTA VISION SRL" (score: 250) - email domain: vistavision.ro, phone: 737505160, address: plevnei-96-1, exact name
+  Matched "SC.SLIM MEDICAL CONCEPT SRL" (score: 100) - phone: 0761379060, address: wilhelm-18-3
+  Matched "S.C. Medima Health S.A.," (score: 250) - email domain: medimahealth.ro, phone: 725307222, address: giulești-41-6, exact name
+  Matched "MEDICAL LAB EXPERT" (score: 200) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1
+  Matched "SC SANO MEDICA DIAGNOSTICS SRL" (score: 100) - phone: 745985048, address: dorobanților-103-1
+  Matched "SC ASCLEPIOS  NETWORK SA" (score: 250) - email domain: atenamc.ro, phone: 731972475, address: strpictor-2-1, exact name
+  Matched "SC Avicena Med Beauty SRL" (score: 250) - email domain: medav.ro, phone: 740762356, address: strdr-9, exact name
+  Matched "ARTHOPE ENDOCRINOLOGY SRL" (score: 200) - email domain: arthope.ro, phone: 721961020, address: erou-1
+  Matched "ST LUKAS HEALTH SRL" (score: 100) - email domain: clinicaromgermed.ro
+  Matched "Dot Doctor Medical Services SRL" (score: 250) - email domain: nefrolog.doctor, phone: 731069086, address: dudesti-104-3, exact name
+  Matched "AESTHETIC SURGERY CENTER SRL" (score: 250) - email domain: medicenter.ro, phone: 742135522, address: ion-126, exact name
+  Matched "MONZA-ARES SRL" (score: 250) - email domain: spitalulmonza.ro, phone: 312252500, address: tony-27-2, exact name
+  Matched "KOLY MEDICAL" (score: 100) - phone: 0726395577, address: strsold-43-2
+  Matched "ASICLINIC MEDIC SRL" (score: 100) - email domain: reteauamedicalavictoria.ro
+  Matched "COREPRIME CLINIC SRL" (score: 250) - email domain: coreprime.ro, phone: 743999909, address: lainici-11-1, exact name
+  Matched "SC EVA SANO MED SRL" (score: 100) - phone: 722675150, address: sold-3-5
+  Matched "SC LABORETICA SRL" (score: 150) - phone: 212520443, address: intrarea-6-1, exact name
+  Matched "CARDIOMED SERVICII SRL" (score: 250) - email domain: ancardio.ro, phone: 748565209, address: sat-165, exact name
+  Matched "ATHENA HEALTH S.R.L." (score: 250) - email domain: metropolitan-hospital.ro, phone: 219676, address: serban-95-4, exact name
+  Matched "PURPLE MED SRL" (score: 250) - email domain: purplemed.ro, phone: 757421421, address: miron-45-1, exact name
+  Matched "HYPERMED CARE SRL" (score: 250) - email domain: camerahiperbara.ro, phone: 318059983, address: pictor-47-1, exact name
+  Matched "DEL HEALTHCARE SRL" (score: 250) - email domain: delmedical.ro, phone: 730030056, address: decebal-14-3, exact name
+  Matched "MEDVIT CENTER SRL" (score: 250) - email domain: medvit.ro, phone: 760633848, address: tomesti-10a-4, exact name
+  Matched "SC ELGINMED CENTRE SRL" (score: 250) - email domain: gmal.com, phone: 723155131, address: oaspetilor-23-1, exact name
+  Matched "SC MEDINST DIAGNOSTIC ROMÂNO-GERMAN SRL" (score: 230) - email domain: medinst.ro, phone: 319902, address: berceni-10-4, name 97% similar
+  Matched "ROMANIAN BARIATRIC CENTER SRL" (score: 250) - email domain: rbc-medical.ro, phone: 726816446, address: giurgeni-5-3, exact name
+  Matched "SC THE INSTITUT OF HEALT HEALTH SRL" (score: 250) - email domain: renewinstitute.ro, phone: 742155977, address: intrarea-1-1, exact name
+  Matched "SC ENT-MED SOLUTION SRL" (score: 250) - email domain: drionescudaniela.ro, phone: 749080427, address: berna-5, exact name
+  Matched "SC BEST ANTIAGING SRL" (score: 250) - email domain: skinmedspa.ro, phone: 728800544, address: drumul-84-6, exact name
+  Matched "SC LIFE CONCEPT MEDICAL SRL" (score: 100) - phone: 0764948112, address: malcoci-4-5
+  Matched "SC CENTRUL MEDICAL AVANTA SRL" (score: 100) - email domain: reginamaria.ro
+  Matched "SC CENTRUL MEDICAL LMED SRL" (score: 200) - email domain: reginamaria.ro, phone: 0212330241, address: garlei-39a
+  Matched "SC TEAM4BRAIN SRL" (score: 250) - email domain: neurohope.ro, phone: 739128385, address: pechea-13-1, exact name
+  Matched "SC  FOCH NEUROMEDICA SRL" (score: 250) - email domain: ymail.com, phone: 727222501, address: splaiul-202k-6, exact name
+  Matched "SC KONKRET MEDICAL CENTER SRL" (score: 200) - email domain: konkretmedical.ro, phone: 745330725, address: jud-2
+  Matched "SC ACTIVE LIFE TERAPY SRL" (score: 200) - email domain: activelife.ro, phone: 722166554, address: făurei-5-1
+  Matched "INSTITUTUL ONCOLOGIC “PROF DR. ALEXANDRU TREISTOREANU" (score: 200) - email domain: marius-nasta.ro, phone: 0213356910, address: şos-90-5
+  Matched "LUKAS HEALTH SRL" (score: 230) - email domain: clinicaromgermed.ro, phone: 213110075, address: vacaresti-276-4, name 84% similar
+  Matched "MEDICAL LAB EXPERT SRL" (score: 230) - email domain: centrul-provita.ro, phone: 0724253790, address: strsandor-21-1, name 82% similar
+  Matched "LABORATORY OF
+ EXPERIMENTAL MEDICINE" (score: 180) - email domain: lem-medicine.ro, phone: 0724006799, name 90% similar
+  Matched "KONKRET MEDICAL" (score: 200) - email domain: konkretmedical.ro, phone: 745330725, address: jud-2
+  Matched "OFTALMICA EXPERT SRL" (score: 100) - phone: 0766291884, address: oltenitei-140-4
+  Matched "SC EYECARE DOC SRL" (score: 150) - phone: 0723442912, address: stefan-44-2, exact name
+  Matched "SC HERMES TRADING SERVICE SRL" (score: 130) - phone: 763283014, address: pescărușului-12-2, name 96% similar
+  Matched "CABINET PSIHIATRIE DR. NICOLA MAGDALENA SRL" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "SC COLOANA MEDICALA SRL" (score: 150) - phone: 745076872, address: gheorghe-26-1, exact name
+  Matched "LUDI MEDICAL CENTER SRL" (score: 100) - email domain: affidea.com
+  Matched "CMI BUMBU AURELIA" (score: 100) - email domain: medipro.ro
+  Matched "PSIHO EXPERT SOLUTION SRL" (score: 100) - phone: 0727038113, address: regiei-8-6
+  Matched "MAS CLINIC SRL" (score: 250) - email domain: masclinic.ro, phone: 722657847, address: mosilor-88-3, exact name
+  Matched "IKRAM CLINIQUE SRL" (score: 100) - phone: 747968900, address: litoralului-10-2
+  Matched "S.C. SCANMED S.R.L." (score: 250) - email domain: scanmed.ro, phone: 741477477, address: panduri-71, exact name
+  Matched "DISTRICT ONE MEDICAL SRL" (score: 100) - email domain: affidea.com
+  Matched "DOCTOR MIT 
+CLINIC BIOBANK SRL" (score: 100) - phone: 0721169121, address: teodor-51-3
+  Matched "CAROL CLINIC SRL" (score: 100) - phone: 0314379451, address: pache-49-2
+  Matched "OCULISTA SRL" (score: 150) - phone: 0734068366, address: dinu-6b, exact name
+  Matched "LAMED FLY CENTER SRL" (score: 250) - email domain: clinicalamed.com, phone: 314339570, address: baia-15, exact name
+  Matched "ASH MEDICALASIST EXPERT SRL" (score: 150) - phone: 763499310, address: septembrie-106, exact name
+  Matched "CRN-CLINICAL RESEARCH NETWORK SRL" (score: 250) - email domain: clinicalresearch-network.com, phone: 720021610, address: theodor-47, exact name
+  Matched "SC EPI TSA SRL" (score: 250) - email domain: epi-tsa.ro, phone: 762111999, address: brasov-11-6, exact name
+  Matched "MOREEA BEAUTY SRL" (score: 150) - phone: 720777771, address: drumul-4, exact name
+  Matched "CAELI MED SRL" (score: 250) - email domain: caelimed.ro, phone: 745648601, address: septembrie-193-5, exact name
+  Matched "BARIATRIC HEALTH SRL" (score: 150) - phone: 711969186, address: scarlatescu-8, exact name
+  Matched "SC CABINET DANA MED SRL" (score: 100) - phone: 0212106109, address: toamnei-59-2
+  Matched "SC MEDICUL CASEI SRL" (score: 100) - phone: 0314328144, address: drumul-39-6
+  Matched "SC AKH MEDICAL KLINIC & HOSPITAL SRL" (score: 150) - phone: 721506617, address: bran-2-2, exact name
+Providers: 771 created, 621 existing, 0 errors
+
+--- Step 2: Enriching providers with details ---
+Enriched 208 providers with details (919 not matched)
+
+--- Step 3: Syncing fund allocations ---
+Fund allocations: 8192 synced, 0 errors
+
+=== Sync Complete ===
+
+--- Database Status ---
+Providers: 3076
+Providers with brand names: 2
+Fund Allocations: 16185
+Specialties: 14

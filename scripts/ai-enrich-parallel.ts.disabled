@@ -1,0 +1,373 @@
+/**
+ * AI Enrich Organizations - Parallel Runner
+ *
+ * Runs multiple enrichment batches in parallel for faster processing.
+ * Each batch writes to a separate file, then merges at the end.
+ *
+ * Usage: npx tsx scripts/ai-enrich-parallel.ts
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import Anthropic from '@anthropic-ai/sdk';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.local' });
+
+const INPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+const OUTPUT_DIR = path.join(process.cwd(), 'data', 'v2');
+
+// Parallel configuration
+const NUM_WORKERS = 5;  // 5 parallel workers
+const DELAY_BETWEEN_CALLS_MS = 1200;  // Slightly faster per worker
+
+// ============================================
+// TYPES (same as main script)
+// ============================================
+
+interface Organization {
+  cui?: string;
+  legalName: string;
+  providerType: string;
+  cnasContractNumber?: string;
+  dataSource: string;
+  dataSourceDate?: string;
+  specialties: string[];
+  primaryLocation: {
+    address?: string;
+    city?: string;
+    county: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+  };
+}
+
+interface DiscoveredLocation {
+  name: string;
+  address: string;
+  city: string;
+  county?: string;
+  phone?: string;
+  website?: string;
+  openingHours?: string;
+  confidence: number;
+}
+
+interface EnrichedOrganization extends Organization {
+  isNetwork: boolean;
+  networkBrand?: string;
+  networkWebsite?: string;
+  aiConfidence: number;
+  aiReasoning: string;
+  discoveredLocations: DiscoveredLocation[];
+  aiEnrichedAt: string;
+}
+
+// ============================================
+// HELPERS
+// ============================================
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function extractDomainFromEmail(email: string): string | null {
+  const match = email.match(/@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  if (!match) return null;
+  const domain = match[1].toLowerCase();
+  if (['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'yahoo.ro'].includes(domain)) {
+    return null;
+  }
+  return domain;
+}
+
+async function fetchWebsiteContent(url: string): Promise<string | null> {
+  try {
+    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    const response = await fetch(fullUrl, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+      },
+      redirect: 'follow',
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) return null;
+    const html = await response.text();
+    return html
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 15000);
+  } catch {
+    return null;
+  }
+}
+
+async function tryFetchWebsite(org: Organization): Promise<{ content: string; url: string } | null> {
+  if (org.primaryLocation.website) {
+    const content = await fetchWebsiteContent(org.primaryLocation.website);
+    if (content && content.length > 500) {
+      return { content, url: org.primaryLocation.website };
+    }
+  }
+
+  if (org.primaryLocation.email) {
+    const domain = extractDomainFromEmail(org.primaryLocation.email);
+    if (domain) {
+      for (const prefix of ['https://', 'https://www.']) {
+        const content = await fetchWebsiteContent(`${prefix}${domain}`);
+        if (content && content.length > 500) {
+          return { content, url: `${prefix}${domain}` };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// ============================================
+// AI ENRICHMENT
+// ============================================
+
+async function enrichOrganization(
+  anthropic: Anthropic,
+  org: Organization
+): Promise<EnrichedOrganization> {
+  const websiteResult = await tryFetchWebsite(org);
+  const emailDomain = org.primaryLocation.email ? extractDomainFromEmail(org.primaryLocation.email) : null;
+
+  const prompt = `Ești un expert în identificarea clinicilor medicale din România. Analizează această organizație:
+
+DATE CNAS:
+- Denumire juridică: ${org.legalName}
+- CUI: ${org.cui || 'necunoscut'}
+- Tip: ${org.providerType}
+- Adresă: ${org.primaryLocation.address || 'necunoscută'}
+- Oraș: ${org.primaryLocation.city || 'necunoscut'}
+- Telefon: ${org.primaryLocation.phone || 'necunoscut'}
+- Email: ${org.primaryLocation.email || 'necunoscut'}
+
+${emailDomain ? `INDICIU: Domeniu email: ${emailDomain}` : ''}
+${websiteResult ? `WEBSITE (${websiteResult.url}):\n${websiteResult.content.slice(0, 8000)}` : 'Nu am putut accesa website-ul'}
+
+DETERMINĂ:
+1. Este o REȚEA medicală cu multiple locații?
+2. Care este BRANDUL real?
+3. Dacă rețea, găsește TOATE locațiile.
+
+Răspunde DOAR în JSON:
+{
+  "isNetwork": <true/false>,
+  "networkBrand": "<brand sau null>",
+  "networkWebsite": "<website sau null>",
+  "confidence": <0-100>,
+  "reasoning": "<explicație scurtă>",
+  "locations": [{"name": "<nume>", "address": "<adresă>", "city": "<oraș>", "phone": "<tel>", "confidence": <0-100>}]
+}`;
+
+  try {
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 3000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+
+    if (!jsonMatch) throw new Error('No JSON');
+
+    const result = JSON.parse(jsonMatch[0]);
+
+    const enriched: EnrichedOrganization = {
+      ...org,
+      isNetwork: result.isNetwork || false,
+      networkBrand: result.networkBrand || null,
+      networkWebsite: result.networkWebsite || websiteResult?.url || null,
+      aiConfidence: result.confidence || 50,
+      aiReasoning: result.reasoning || '',
+      discoveredLocations: (result.locations || []).map((loc: any) => ({
+        name: loc.name || org.legalName,
+        address: loc.address || org.primaryLocation.address || '',
+        city: loc.city || org.primaryLocation.city || '',
+        county: loc.county || org.primaryLocation.county,
+        phone: loc.phone || null,
+        openingHours: loc.openingHours || null,
+        confidence: loc.confidence || 70,
+      })),
+      aiEnrichedAt: new Date().toISOString(),
+    };
+
+    if (enriched.discoveredLocations.length === 0) {
+      enriched.discoveredLocations.push({
+        name: enriched.networkBrand || org.legalName,
+        address: org.primaryLocation.address || '',
+        city: org.primaryLocation.city || '',
+        county: org.primaryLocation.county,
+        phone: org.primaryLocation.phone || null,
+        openingHours: null,
+        confidence: 100,
+      });
+    }
+
+    return enriched;
+  } catch (error) {
+    return {
+      ...org,
+      isNetwork: false,
+      networkBrand: null,
+      networkWebsite: null,
+      aiConfidence: 0,
+      aiReasoning: `Error: ${error}`,
+      discoveredLocations: [{
+        name: org.legalName,
+        address: org.primaryLocation.address || '',
+        city: org.primaryLocation.city || '',
+        county: org.primaryLocation.county,
+        phone: org.primaryLocation.phone || null,
+        openingHours: null,
+        confidence: 100,
+      }],
+      aiEnrichedAt: new Date().toISOString(),
+    };
+  }
+}
+
+// ============================================
+// WORKER
+// ============================================
+
+async function processWorker(
+  workerId: number,
+  organizations: Organization[],
+  startIdx: number,
+  endIdx: number,
+  anthropic: Anthropic
+): Promise<EnrichedOrganization[]> {
+  const results: EnrichedOrganization[] = [];
+
+  for (let i = startIdx; i < endIdx; i++) {
+    const org = organizations[i];
+    const progress = `[W${workerId}] [${i + 1}/${organizations.length}]`;
+
+    process.stdout.write(`${progress} ${org.legalName.substring(0, 35).padEnd(35)}...`);
+
+    const enriched = await enrichOrganization(anthropic, org);
+    results.push(enriched);
+
+    if (enriched.isNetwork) {
+      console.log(` ✓ NETWORK: ${enriched.networkBrand} (${enriched.discoveredLocations.length} loc)`);
+    } else {
+      console.log(` ✓ ${enriched.networkBrand || 'single'}`);
+    }
+
+    await sleep(DELAY_BETWEEN_CALLS_MS);
+  }
+
+  return results;
+}
+
+// ============================================
+// MAIN
+// ============================================
+
+async function main(): Promise<void> {
+  console.log('=== AI Enrich Organizations (Parallel) ===\n');
+  console.log(`Workers: ${NUM_WORKERS}`);
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('ERROR: ANTHROPIC_API_KEY not set');
+    process.exit(1);
+  }
+
+  // Load organizations
+  const orgsFile = path.join(INPUT_DIR, 'organizations.json');
+  const organizations: Organization[] = JSON.parse(fs.readFileSync(orgsFile, 'utf-8'));
+  console.log(`Loaded ${organizations.length} organizations\n`);
+
+  // Load already enriched (to skip)
+  const enrichedFile = path.join(OUTPUT_DIR, 'enriched_organizations.json');
+  let existingEnriched: EnrichedOrganization[] = [];
+  if (fs.existsSync(enrichedFile)) {
+    existingEnriched = JSON.parse(fs.readFileSync(enrichedFile, 'utf-8'));
+    console.log(`Found ${existingEnriched.length} already enriched\n`);
+  }
+
+  // Filter out already enriched
+  const existingKeys = new Set(existingEnriched.map(e => e.cui || e.legalName));
+  const toProcess = organizations.filter(o => !existingKeys.has(o.cui || o.legalName));
+  console.log(`To process: ${toProcess.length} organizations\n`);
+
+  if (toProcess.length === 0) {
+    console.log('All organizations already enriched!');
+    return;
+  }
+
+  // Create Anthropic client
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+
+  // Split work among workers
+  const chunkSize = Math.ceil(toProcess.length / NUM_WORKERS);
+  const workerPromises: Promise<EnrichedOrganization[]>[] = [];
+
+  console.log(`Starting ${NUM_WORKERS} workers (${chunkSize} orgs each)...\n`);
+
+  for (let w = 0; w < NUM_WORKERS; w++) {
+    const start = w * chunkSize;
+    const end = Math.min(start + chunkSize, toProcess.length);
+
+    if (start >= toProcess.length) break;
+
+    // Stagger worker starts to avoid rate limit spikes
+    await sleep(w * 300);
+
+    workerPromises.push(processWorker(w + 1, toProcess, start, end, anthropic));
+  }
+
+  // Wait for all workers
+  const workerResults = await Promise.all(workerPromises);
+
+  // Merge results
+  const allEnriched = [...existingEnriched];
+  let networksFound = 0;
+  let totalLocations = 0;
+
+  for (const results of workerResults) {
+    for (const enriched of results) {
+      // Update or add
+      const existingIdx = allEnriched.findIndex(e =>
+        (e.cui && e.cui === enriched.cui) || e.legalName === enriched.legalName
+      );
+      if (existingIdx >= 0) {
+        allEnriched[existingIdx] = enriched;
+      } else {
+        allEnriched.push(enriched);
+      }
+
+      if (enriched.isNetwork) networksFound++;
+      totalLocations += enriched.discoveredLocations.length;
+    }
+  }
+
+  // Save merged results
+  fs.writeFileSync(enrichedFile, JSON.stringify(allEnriched, null, 2));
+
+  console.log('\n=== Complete ===');
+  console.log(`Total enriched: ${allEnriched.length}`);
+  console.log(`Networks found: ${networksFound}`);
+  console.log(`Total locations: ${totalLocations}`);
+  console.log(`\nOutput: ${enrichedFile}`);
+}
+
+main().catch(console.error);
