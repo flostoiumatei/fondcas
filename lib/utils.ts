@@ -216,28 +216,33 @@ export function formatPhone(phone: string): string {
 }
 
 /**
- * Create Google Maps directions URL
- * Uses address text as destination for better search results
+ * Create Google Search URL for directions
+ * Uses simplified address if available for better search results
  */
-export function getDirectionsUrl(lat: number, lng: number, name?: string, address?: string): string {
-  // Prefer using address text as destination - Google Maps will search for it
-  // This gives better results than coordinates alone, especially when coordinates
-  // point to a general area rather than the exact building
+export function getDirectionsUrl(
+  lat: number,
+  lng: number,
+  name?: string,
+  address?: string,
+  addressSimple?: string | null
+): string {
+  // Prefer simplified address if available
+  const addr = addressSimple || address;
 
-  let destination: string;
+  let query: string;
 
-  if (address && address.length > 10) {
-    // Use full address if available and meaningful
-    destination = encodeURIComponent(address);
+  if (name && addr) {
+    query = `${name}, ${addr}`;
+  } else if (addr) {
+    query = addr;
   } else if (name) {
-    // Fall back to name + address
-    destination = encodeURIComponent(address ? `${name}, ${address}` : name);
+    query = name;
   } else {
     // Last resort: use coordinates
-    destination = `${lat},${lng}`;
+    query = `${lat},${lng}`;
   }
 
-  return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 }
 
 /**

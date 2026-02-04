@@ -40,6 +40,7 @@ interface Location {
   id: string;
   name: string;
   address?: string;
+  address_simple?: string;
   city?: string;
   lat?: number;
   lng?: number;
@@ -235,7 +236,7 @@ export default function ClinicPage({ params }: PageProps) {
               )}
               {(location.lat && location.lng) && (
                 <a
-                  href={getDirectionsUrl(location.lat, location.lng, displayName, location.address)}
+                  href={getDirectionsUrl(location.lat, location.lng, displayName, location.address, location.address_simple)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={location.phone ? '' : 'flex-1'}
@@ -350,7 +351,7 @@ export default function ClinicPage({ params }: PageProps) {
                 />
                 <div className="p-3 border-t border-border/50">
                   <a
-                    href={getDirectionsUrl(location.lat, location.lng, displayName, location.address)}
+                    href={getDirectionsUrl(location.lat, location.lng, displayName, location.address, location.address_simple)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -419,13 +420,16 @@ export default function ClinicPage({ params }: PageProps) {
 
         {/* Data Source Info */}
         <Card className="bg-white/40 backdrop-blur-sm border-border/30">
-          <CardContent className="p-4">
+          <CardContent className="p-4 space-y-2">
             <p className="text-xs text-muted-foreground">
               <span className="font-medium text-foreground/80">Sursa datelor: </span>
               {location.source === 'cnas' ? 'CNAS (date oficiale)' : 'Descoperit prin AI'}
               {org?.data_source_date && (
                 <> · Actualizat: {new Date(org.data_source_date).toLocaleDateString('ro-RO')}</>
               )}
+            </p>
+            <p className="text-xs text-amber-600/80">
+              Adresa și locația pe hartă sunt informative. Vă rugăm verificați adresa înainte de a vă deplasa.
             </p>
           </CardContent>
         </Card>

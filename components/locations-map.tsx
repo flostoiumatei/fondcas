@@ -235,7 +235,8 @@ export default function LocationsMap({
           <div style="min-width: 200px; max-width: 280px; padding: 4px;">
             ${loc.is_network && loc.network_brand ? `<p style="font-size: 12px; color: #7C3AED; font-weight: 600; margin-bottom: 4px;">🏥 ${loc.network_brand}</p>` : ''}
             <h3 style="font-weight: bold; font-size: 14px; color: #111; margin-bottom: 4px;">${loc.name}</h3>
-            ${loc.address ? `<p style="font-size: 12px; color: #666; margin-bottom: 8px;">${loc.address}</p>` : ''}
+            ${loc.address ? `<p style="font-size: 12px; color: #666; margin-bottom: 6px;">${loc.address}</p>` : ''}
+            <p style="font-size: 10px; color: #b45309; margin-bottom: 8px;">Locația este informativă. Verificați adresa.</p>
             <a
               href="/clinic/${loc.id}"
               style="display: block; width: 100%; text-align: center; padding: 8px 12px; background: #0891B2; color: white; font-size: 12px; font-weight: 600; border-radius: 8px; text-decoration: none;"
