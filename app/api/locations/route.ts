@@ -173,10 +173,10 @@ export async function GET(request: NextRequest) {
 
       if (allOrgIds.length > 0) {
         // Search in location fields OR organization matches (by name or specialty)
-        queryBuilder = queryBuilder.or(`name.ilike.%${query}%,address.ilike.%${query}%,organization_id.in.(${allOrgIds.join(',')})`);
+        queryBuilder = queryBuilder.or(`name.ilike.%${query}%,address.ilike.%${query}%,website.ilike.%${query}%,organization_id.in.(${allOrgIds.join(',')})`);
       } else {
-        // No org matches, just search location fields
-        queryBuilder = queryBuilder.or(`name.ilike.%${query}%,address.ilike.%${query}%`);
+        // No org matches, just search location fields (including website for brand names)
+        queryBuilder = queryBuilder.or(`name.ilike.%${query}%,address.ilike.%${query}%,website.ilike.%${query}%`);
       }
     }
 
