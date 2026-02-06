@@ -121,6 +121,9 @@ export function SmartSearch({
       } else {
         const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
         params.set('query', query.trim());
+        // Clear specialty and network filters - user is doing a new text search
+        params.delete('specialty');
+        params.delete('network');
         router.push(`/search?${params.toString()}`);
       }
     }
@@ -143,11 +146,13 @@ export function SmartSearch({
       case 'specialty':
         params.set('specialty', suggestion.name);
         params.delete('query'); // Clear text query when selecting specialty
+        params.delete('network'); // Clear network filter - user is searching for specialty
         router.push(`/search?${params.toString()}`);
         break;
       case 'network':
         params.set('query', suggestion.name);
         params.set('network', 'true');
+        params.delete('specialty'); // Clear specialty - user is searching for network
         router.push(`/search?${params.toString()}`);
         break;
       case 'location':
@@ -335,6 +340,9 @@ export function SmartSearch({
                 setIsOpen(false);
                 const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
                 params.set('query', query);
+                // Clear specialty and network - user wants to search all
+                params.delete('specialty');
+                params.delete('network');
                 router.push(`/search?${params.toString()}`);
               }}
               className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-primary hover:bg-primary/5 transition-colors font-medium"
@@ -360,6 +368,9 @@ export function SmartSearch({
               setIsOpen(false);
               const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
               params.set('query', query);
+              // Clear specialty and network filters
+              params.delete('specialty');
+              params.delete('network');
               router.push(`/search?${params.toString()}`);
             }}
           >
