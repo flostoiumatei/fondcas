@@ -4,8 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  Search,
-  MapPin,
   Building2,
   Stethoscope,
   Heart,
@@ -23,7 +21,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { SmartSearch } from '@/components/smart-search';
 
 const POPULAR_SPECIALTIES = [
   { name: 'Cardiologie', icon: Heart, slug: 'cardiologie', gradient: 'from-rose-500 to-pink-600' },
@@ -40,17 +38,7 @@ const PROVIDER_TYPES = [
 
 export default function HomePage() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
   const [locating, setLocating] = useState(false);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      router.push('/search');
-    }
-  };
 
   const handleNearbySearch = () => {
     if (!navigator.geolocation) {
@@ -107,58 +95,43 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Search Form */}
-          <form onSubmit={handleSearch} className="space-y-3">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Caută clinică, specialitate..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-14 text-base rounded-2xl bg-white/80 backdrop-blur-sm border-white/50 shadow-lg focus:shadow-xl focus:border-primary/50 transition-all"
-              />
-            </div>
+          {/* Smart Search */}
+          <div className="space-y-3">
+            <SmartSearch
+              placeholder="Caută clinică, specialitate..."
+              autoFocus={false}
+            />
 
             <div className="flex gap-2">
-              <Button
-                type="submit"
-                size="lg"
-                className="flex-1 rounded-2xl text-base"
-              >
-                <Search className="h-5 w-5 mr-2" />
-                Caută
-              </Button>
-
               <Button
                 type="button"
                 variant="outline"
                 size="lg"
                 onClick={handleNearbySearch}
                 disabled={locating}
-                className="rounded-2xl px-4"
-                title="Găsește în apropierea mea"
+                className="flex-1 rounded-2xl"
               >
                 {locating ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
                 ) : (
-                  <Locate className="h-5 w-5" />
+                  <Locate className="h-5 w-5 mr-2" />
                 )}
+                Lângă mine
               </Button>
 
-              <Link href="/map">
+              <Link href="/map" className="flex-1">
                 <Button
                   type="button"
                   variant="outline"
                   size="lg"
-                  className="rounded-2xl px-4"
-                  title="Vezi pe hartă"
+                  className="w-full rounded-2xl"
                 >
-                  <Map className="h-5 w-5" />
+                  <Map className="h-5 w-5 mr-2" />
+                  Hartă
                 </Button>
               </Link>
             </div>
-          </form>
+          </div>
         </div>
       </section>
 
