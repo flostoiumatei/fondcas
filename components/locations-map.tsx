@@ -350,7 +350,7 @@ export default function LocationsMap({
       // This allows users to freely pan/zoom after the initial view is set
       const shouldRecenter = lastCenterKeyRef.current !== centerKey;
 
-      if (shouldRecenter && (validLocations.length > 0 || userLocation)) {
+      if (shouldRecenter) {
         lastCenterKeyRef.current = centerKey;
         // Save to sessionStorage to prevent re-centering on back navigation
         if (centerKey) {
@@ -368,8 +368,11 @@ export default function LocationsMap({
             } else if (userLocation) {
               // User location but no radius - center on user with default zoom
               mapInstanceRef.current.setView([userLocation.lat, userLocation.lng], 14);
+            } else if (center) {
+              // Center prop provided (from URL params) - don't fit to all locations
+              // Map was already initialized at correct center/zoom
             } else if (validLocations.length > 0) {
-              // No user location - fit to all locations
+              // No user location and no center - fit to all locations
               const bounds = L.latLngBounds(validLocations.map(loc => [loc.lat, loc.lng]));
               mapInstanceRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
             }

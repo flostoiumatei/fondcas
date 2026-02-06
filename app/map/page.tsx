@@ -407,12 +407,14 @@ function MapContent() {
             >
               <LocationsMap
                 locations={mapLocations}
+                center={urlLat && urlLng ? { lat: parseFloat(urlLat), lng: parseFloat(urlLng) } : undefined}
+                zoom={urlLat && urlLng ? (radius <= 1 ? 16 : radius <= 2 ? 15 : radius <= 3 ? 14 : radius <= 5 ? 13 : radius <= 10 ? 12 : 11) : undefined}
                 userLocation={userLocation}
                 radius={userLocation ? radius : undefined}
                 onLocationClick={handleLocationClick}
                 onBoundsChange={handleBoundsChange}
                 height="100%"
-                centerKey={userLocation ? `${userLocation.lat}-${userLocation.lng}-${radius}` : 'default'}
+                centerKey={urlLat && urlLng ? `${urlLat}-${urlLng}-${radius}` : 'default'}
               />
 
               {/* Floating counter - always visible on map */}
