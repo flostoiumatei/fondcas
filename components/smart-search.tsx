@@ -108,12 +108,17 @@ export function SmartSearch({
     setIsOpen(false);
 
     if (selectedIndex >= 0 && suggestions[selectedIndex]) {
+      // User selected a suggestion with keyboard
       handleSuggestionClick(suggestions[selectedIndex]);
+    } else if (suggestions.length > 0 && query.trim()) {
+      // Auto-select first suggestion for consistency
+      // This ensures what you see in suggestions is what you search for
+      handleSuggestionClick(suggestions[0]);
     } else if (query.trim()) {
+      // No suggestions available, search raw query
       if (onSearch) {
         onSearch(query.trim());
       } else {
-        // Build URL with preserved params if provided
         const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
         params.set('query', query.trim());
         router.push(`/search?${params.toString()}`);
