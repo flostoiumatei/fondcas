@@ -36,10 +36,23 @@ interface LocationsMapProps {
   center?: { lat: number; lng: number };
   zoom?: number;
   userLocation?: { lat: number; lng: number } | null;
+  radius?: number; // Radius in km for nearby search - affects zoom level
   onLocationClick?: (id: string) => void;
   onBoundsChange?: (bounds: MapBounds, visibleLocationIds: string[]) => void;
   height?: string;
   centerKey?: string; // Change this to force re-center (e.g., when user clicks "near me")
+}
+
+// Calculate appropriate zoom level based on radius in km
+function getZoomForRadius(radiusKm: number): number {
+  // Approximate zoom levels for different radii
+  if (radiusKm <= 1) return 16;
+  if (radiusKm <= 2) return 15;
+  if (radiusKm <= 3) return 14;
+  if (radiusKm <= 5) return 13;
+  if (radiusKm <= 10) return 12;
+  if (radiusKm <= 20) return 11;
+  return 10;
 }
 
 export default function LocationsMap({
@@ -47,6 +60,7 @@ export default function LocationsMap({
   center,
   zoom = 12,
   userLocation,
+  radius,
   onLocationClick,
   onBoundsChange,
   height = '400px',
@@ -347,14 +361,15 @@ export default function LocationsMap({
           if (!mountedRef.current || !mapInstanceRef.current) return;
 
           try {
-            if (userLocation) {
-              // If user location is set, center on user and fit to include nearby locations
-              const bounds = L.latLngBounds([[userLocation.lat, userLocation.lng]]);
-              validLocations.forEach(loc => {
-                bounds.extend([loc.lat, loc.lng]);
-              });
-              mapInstanceRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+            if (userLocation && radius) {
+              // In nearby mode: center on user with zoom based on radius
+              const zoomLevel = getZoomForRadius(radius);
+              mapInstanceRef.current.setView([userLocation.lat, userLocation.lng], zoomLevel);
+            } else if (userLocation) {
+              // User location but no radius - center on user with default zoom
+              mapInstanceRef.current.setView([userLocation.lat, userLocation.lng], 14);
             } else if (validLocations.length > 0) {
+              // No user location - fit to all locations
               const bounds = L.latLngBounds(validLocations.map(loc => [loc.lat, loc.lng]));
               mapInstanceRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
             }

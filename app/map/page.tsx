@@ -408,6 +408,7 @@ function MapContent() {
               <LocationsMap
                 locations={mapLocations}
                 userLocation={userLocation}
+                radius={userLocation ? radius : undefined}
                 onLocationClick={handleLocationClick}
                 onBoundsChange={handleBoundsChange}
                 height="100%"
