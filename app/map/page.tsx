@@ -72,9 +72,20 @@ function MapContent() {
   const [filters, setFilters] = useState<FilterOptions | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [geolocating, setGeolocating] = useState(false);
-  const [showList, setShowList] = useState(false);
+  // Restore showList state from sessionStorage
+  const [showList, setShowList] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('map-show-list') === 'true';
+    }
+    return false;
+  });
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
   const [visibleLocationIds, setVisibleLocationIds] = useState<Set<string>>(new Set());
+
+  // Save showList state to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('map-show-list', showList.toString());
+  }, [showList]);
 
   const [queryInput, setQueryInput] = useState(searchParams.get('query') || '');
   const query = searchParams.get('query') || '';
@@ -358,6 +369,7 @@ function MapContent() {
               >
                 <option value="1">1 km</option>
                 <option value="2">2 km</option>
+                <option value="3">3 km</option>
                 <option value="5">5 km</option>
                 <option value="10">10 km</option>
                 <option value="20">20 km</option>

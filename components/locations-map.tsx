@@ -57,7 +57,10 @@ export default function LocationsMap({
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const locationsRef = useRef<MapLocation[]>(locations);
   const mountedRef = useRef(true);
-  const lastCenterKeyRef = useRef<string | undefined>(undefined);
+  // Restore lastCenterKey from sessionStorage to prevent re-centering on back navigation
+  const lastCenterKeyRef = useRef<string | undefined>(
+    typeof window !== 'undefined' ? sessionStorage.getItem('map-last-center-key') || undefined : undefined
+  );
   const [isReady, setIsReady] = useState(false);
 
   // Keep locations ref updated
@@ -118,13 +121,27 @@ export default function LocationsMap({
       markersLayerRef.current = null;
     }
 
-    // Default center to Romania if no center provided
-    const defaultCenter = center || { lat: 44.4268, lng: 26.1025 };
+    // Try to restore saved map position
+    let initialCenter = center || { lat: 44.4268, lng: 26.1025 };
+    let initialZoom = zoom;
+
+    try {
+      const savedState = sessionStorage.getItem('map-view-state');
+      if (savedState) {
+        const { center: savedCenter, zoom: savedZoom } = JSON.parse(savedState);
+        if (savedCenter && savedZoom) {
+          initialCenter = savedCenter;
+          initialZoom = savedZoom;
+        }
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
 
     try {
       const map = L.map(mapContainerRef.current, {
-        center: [defaultCenter.lat, defaultCenter.lng],
-        zoom: zoom,
+        center: [initialCenter.lat, initialCenter.lng],
+        zoom: initialZoom,
         zoomControl: true,
         scrollWheelZoom: true,
         doubleClickZoom: true,
@@ -144,9 +161,30 @@ export default function LocationsMap({
       mapInstanceRef.current = map;
       markersLayerRef.current = markersLayer;
 
+      // Save map state to sessionStorage when it changes
+      const saveMapState = () => {
+        if (!mapInstanceRef.current) return;
+        try {
+          const center = mapInstanceRef.current.getCenter();
+          const zoom = mapInstanceRef.current.getZoom();
+          sessionStorage.setItem('map-view-state', JSON.stringify({
+            center: { lat: center.lat, lng: center.lng },
+            zoom: zoom
+          }));
+        } catch (e) {
+          // Ignore errors
+        }
+      };
+
       // Listen for map movement/zoom
-      map.on('moveend', reportVisibleLocations);
-      map.on('zoomend', reportVisibleLocations);
+      map.on('moveend', () => {
+        reportVisibleLocations();
+        saveMapState();
+      });
+      map.on('zoomend', () => {
+        reportVisibleLocations();
+        saveMapState();
+      });
 
       // Wait for map to be ready
       map.whenReady(() => {
@@ -186,8 +224,9 @@ export default function LocationsMap({
       return () => {
         mountedRef.current = false;
         window.removeEventListener('resize', handleResize);
-        map.off('moveend', reportVisibleLocations);
-        map.off('zoomend', reportVisibleLocations);
+        // Remove all listeners
+        map.off('moveend');
+        map.off('zoomend');
 
         if (mapInstanceRef.current) {
           try {
@@ -299,6 +338,10 @@ export default function LocationsMap({
 
       if (shouldRecenter && (validLocations.length > 0 || userLocation)) {
         lastCenterKeyRef.current = centerKey;
+        // Save to sessionStorage to prevent re-centering on back navigation
+        if (centerKey) {
+          sessionStorage.setItem('map-last-center-key', centerKey);
+        }
 
         setTimeout(() => {
           if (!mountedRef.current || !mapInstanceRef.current) return;
