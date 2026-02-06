@@ -81,6 +81,26 @@ export async function GET(request: NextRequest) {
 
     const suggestions: Suggestion[] = [];
 
+    // Special handling for common searches that map to provider types
+    const labKeywords = ['analize', 'laborator', 'lab', 'sange', 'teste'];
+    const queryLower = query.toLowerCase();
+
+    for (const keyword of labKeywords) {
+      if (keyword.includes(queryLower) || queryLower.includes(keyword.slice(0, 3))) {
+        const score = fuzzyScore(query, 'Laboratoare analize medicale');
+        if (score > 0 || queryLower.length >= 3) {
+          suggestions.push({
+            type: 'specialty', // Using specialty type but will be handled specially
+            id: 'type:paraclinic',
+            name: 'Laboratoare / Analize medicale',
+            subtitle: 'Toate laboratoarele',
+            score: Math.max(score, 85), // High score to appear first
+          });
+          break;
+        }
+      }
+    }
+
     // Search locations/clinics
     const { data: locations } = await supabase
       .from('locations')

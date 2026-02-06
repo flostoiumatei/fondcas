@@ -144,9 +144,18 @@ export function SmartSearch({
 
     switch (suggestion.type) {
       case 'specialty':
-        params.set('specialty', suggestion.name);
-        params.delete('query'); // Clear text query when selecting specialty
-        params.delete('network'); // Clear network filter - user is searching for specialty
+        // Check if this is a special provider type suggestion (e.g., "type:paraclinic")
+        if (suggestion.id.startsWith('type:')) {
+          const providerType = suggestion.id.replace('type:', '');
+          params.set('type', providerType);
+          params.delete('query');
+          params.delete('specialty');
+          params.delete('network');
+        } else {
+          params.set('specialty', suggestion.name);
+          params.delete('query'); // Clear text query when selecting specialty
+          params.delete('network'); // Clear network filter - user is searching for specialty
+        }
         router.push(`/search?${params.toString()}`);
         break;
       case 'network':

@@ -27,7 +27,7 @@ const POPULAR_SPECIALTIES = [
   { name: 'Cardiologie', icon: Heart, slug: 'cardiologie', gradient: 'from-rose-500 to-pink-600' },
   { name: 'Oftalmologie', icon: Eye, slug: 'oftalmologie', gradient: 'from-cyan-500 to-blue-600' },
   { name: 'Ginecologie', icon: Baby, slug: 'obstetrica-ginecologie', gradient: 'from-purple-500 to-violet-600' },
-  { name: 'Analize', icon: FlaskConical, slug: 'laborator', gradient: 'from-emerald-500 to-teal-600' },
+  { name: 'Analize', icon: FlaskConical, slug: 'laborator', gradient: 'from-emerald-500 to-teal-600', isType: true },
 ];
 
 const PROVIDER_TYPES = [
@@ -182,7 +182,7 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-2 gap-3">
             {POPULAR_SPECIALTIES.map((spec) => (
-              <Link key={spec.slug} href={`/search?specialty=${spec.slug}`}>
+              <Link key={spec.slug} href={spec.isType ? `/search?type=paraclinic` : `/search?specialty=${spec.slug}`}>
                 <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group bg-white/80 backdrop-blur-sm border-white/50 hover:border-primary/30">
                   <CardContent className="p-4 flex items-center gap-3">
                     <div className={`p-2.5 rounded-xl bg-gradient-to-br ${spec.gradient} shadow-lg group-hover:scale-110 transition-transform`}>
