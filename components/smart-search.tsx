@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-interface Suggestion {
+export interface Suggestion {
   type: 'location' | 'specialty' | 'network';
   id: string;
   name: string;
@@ -26,16 +26,20 @@ interface Suggestion {
 
 interface SmartSearchProps {
   onSearch?: (query: string) => void;
+  onSuggestionSelect?: (suggestion: Suggestion) => void;
   placeholder?: string;
   autoFocus?: boolean;
   className?: string;
+  preserveParams?: string; // URL search params string to preserve when navigating
 }
 
 export function SmartSearch({
   onSearch,
+  onSuggestionSelect,
   placeholder = "Caută clinică, specialitate...",
   autoFocus = false,
   className,
+  preserveParams,
 }: SmartSearchProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
@@ -109,7 +113,10 @@ export function SmartSearch({
       if (onSearch) {
         onSearch(query.trim());
       } else {
-        router.push(`/search?query=${encodeURIComponent(query.trim())}`);
+        // Build URL with preserved params if provided
+        const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
+        params.set('query', query.trim());
+        router.push(`/search?${params.toString()}`);
       }
     }
   };
@@ -118,12 +125,25 @@ export function SmartSearch({
     setIsOpen(false);
     setQuery('');
 
+    // Use custom handler if provided
+    if (onSuggestionSelect) {
+      onSuggestionSelect(suggestion);
+      return;
+    }
+
+    // Build URL with preserved params if provided
+    const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
+
     switch (suggestion.type) {
       case 'specialty':
-        router.push(`/search?specialty=${encodeURIComponent(suggestion.name)}`);
+        params.set('specialty', suggestion.name);
+        params.delete('query'); // Clear text query when selecting specialty
+        router.push(`/search?${params.toString()}`);
         break;
       case 'network':
-        router.push(`/search?query=${encodeURIComponent(suggestion.name)}&network=true`);
+        params.set('query', suggestion.name);
+        params.set('network', 'true');
+        router.push(`/search?${params.toString()}`);
         break;
       case 'location':
         router.push(`/clinic/${suggestion.id}`);
@@ -308,7 +328,9 @@ export function SmartSearch({
               type="button"
               onClick={() => {
                 setIsOpen(false);
-                router.push(`/search?query=${encodeURIComponent(query)}`);
+                const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
+                params.set('query', query);
+                router.push(`/search?${params.toString()}`);
               }}
               className="w-full flex items-center justify-center gap-2 p-3 rounded-xl text-primary hover:bg-primary/5 transition-colors font-medium"
             >
@@ -331,7 +353,9 @@ export function SmartSearch({
             size="sm"
             onClick={() => {
               setIsOpen(false);
-              router.push(`/search?query=${encodeURIComponent(query)}`);
+              const params = preserveParams ? new URLSearchParams(preserveParams) : new URLSearchParams();
+              params.set('query', query);
+              router.push(`/search?${params.toString()}`);
             }}
           >
             Caută oricum

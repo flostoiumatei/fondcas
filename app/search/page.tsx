@@ -6,12 +6,10 @@ import Link from 'next/link';
 import {
   Search,
   MapPin,
-  Phone,
   ChevronRight,
   Building2,
   Network,
   CheckCircle2,
-  AlertCircle,
   X,
   Locate,
   Loader2
@@ -20,9 +18,9 @@ import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SearchableSelect } from '@/components/ui/searchable-select';
+import { SmartSearch } from '@/components/smart-search';
 import { cn, formatPhone, formatDistance } from '@/lib/utils';
 import { PROVIDER_TYPE_LABELS } from '@/lib/types';
 
@@ -69,10 +67,6 @@ function SearchContent() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [filters, setFilters] = useState<FilterOptions | null>(null);
   const [geolocating, setGeolocating] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-
-  // Filter state
-  const [queryInput, setQueryInput] = useState(searchParams.get('query') || '');
 
   const query = searchParams.get('query') || '';
   const county = searchParams.get('county') || '';
@@ -146,18 +140,6 @@ function SearchContent() {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams.toString());
-    if (queryInput.trim()) {
-      params.set('query', queryInput.trim());
-    } else {
-      params.delete('query');
-    }
-    router.push(`/search?${params.toString()}`);
-    setShowFilters(false);
-  };
-
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
@@ -218,25 +200,20 @@ function SearchContent() {
       {/* Search & Filters - Compact */}
       <div className="sticky top-14 z-40 bg-white/95 backdrop-blur-xl border-b border-primary/10">
         {/* Search Row */}
-        <form onSubmit={handleSearch} className="px-3 pt-3 pb-2">
+        <div className="px-3 pt-3 pb-2">
           <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary/60" />
-              <Input
-                type="text"
-                placeholder="Clinică, specialitate, adresă..."
-                value={queryInput}
-                onChange={(e) => setQueryInput(e.target.value)}
-                className="pl-10 h-10 rounded-xl bg-white border-primary/20 focus:border-primary/40 text-sm"
-              />
-            </div>
+            <SmartSearch
+              placeholder="Clinică, specialitate, adresă..."
+              className="flex-1"
+              preserveParams={searchParams.toString()}
+            />
             <Button
               type="button"
               variant={(lat && lng) ? 'default' : 'outline'}
               size="iconSm"
               onClick={handleGeolocation}
               disabled={geolocating}
-              className="flex-shrink-0"
+              className="flex-shrink-0 h-14"
               title="Lângă mine"
             >
               {geolocating ? (
@@ -246,7 +223,7 @@ function SearchContent() {
               )}
             </Button>
           </div>
-        </form>
+        </div>
 
         {/* Horizontal Filter Pills */}
         <div className="px-3 pb-2 flex gap-2 overflow-x-auto no-scrollbar">
