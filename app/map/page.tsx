@@ -9,7 +9,6 @@ import {
   Locate,
   List,
   MapIcon,
-  ChevronDown,
   X,
   Navigation,
   Phone,
@@ -21,6 +20,7 @@ import { Header } from '@/components/layout/header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { cn, formatPhone, getDirectionsUrl, getGoogleMapsSearchUrl, calculateDistance, formatDistance } from '@/lib/utils';
 
 const LocationsMap = dynamic(() => import('@/components/locations-map'), {
@@ -53,6 +53,7 @@ interface Location {
 interface FilterOptions {
   counties: { id: string; code: string; name: string }[];
   providerTypes: { value: string; label: string }[];
+  specialties: { id: string; name: string }[];
 }
 
 interface MapBounds {
@@ -77,8 +78,13 @@ function MapContent() {
 
   const [queryInput, setQueryInput] = useState(searchParams.get('query') || '');
   const query = searchParams.get('query') || '';
-  const county = searchParams.get('county') || '';
-  const type = searchParams.get('type') || '';
+  // Support multiple values (comma-separated in URL) - memoized to prevent infinite loops
+  const countiesParam = searchParams.get('counties') || '';
+  const typesParam = searchParams.get('types') || '';
+  const specialtiesParam = searchParams.get('specialties') || '';
+  const counties = useMemo(() => countiesParam.split(',').filter(Boolean), [countiesParam]);
+  const types = useMemo(() => typesParam.split(',').filter(Boolean), [typesParam]);
+  const specialtiesList = useMemo(() => specialtiesParam.split(',').filter(Boolean), [specialtiesParam]);
   const network = searchParams.get('network') || '';
   const urlLat = searchParams.get('lat');
   const urlLng = searchParams.get('lng');
@@ -108,10 +114,12 @@ function MapContent() {
     try {
       const params = new URLSearchParams();
       if (query) params.set('query', query);
-      if (county) params.set('county', county);
-      if (type) params.set('type', type);
+      // Send first value for backward compatibility with API
+      if (counties.length > 0) params.set('county', counties[0]);
+      if (types.length > 0) params.set('type', types[0]);
+      if (specialtiesList.length > 0) params.set('specialty', specialtiesList[0]);
       if (network === 'true') params.set('network', 'true');
-      params.set('limit', '500'); // Get more for map view
+      params.set('limit', '2000'); // Get more for map view
 
       const response = await fetch(`/api/locations?${params.toString()}`);
       const data = await response.json();
@@ -147,7 +155,7 @@ function MapContent() {
     } finally {
       setLoading(false);
     }
-  }, [query, county, type, network, userLocation, radius]);
+  }, [query, counties, types, specialtiesList, network, userLocation, radius]);
 
   useEffect(() => {
     fetchLocations();
@@ -168,6 +176,16 @@ function MapContent() {
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
       params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    router.push(`/map?${params.toString()}`);
+  };
+
+  const updateMultiFilter = (key: string, values: string[]) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (values.length > 0) {
+      params.set(key, values.join(','));
     } else {
       params.delete(key);
     }
@@ -269,13 +287,9 @@ function MapContent() {
             <Button
               type="button"
               variant={userLocation ? 'default' : 'outline'}
-              size="icon"
+              size="iconSm"
               onClick={handleGeolocation}
               disabled={geolocating}
-              className={cn(
-                "h-10 w-10 rounded-xl",
-                userLocation && "bg-primary hover:bg-primary/90"
-              )}
               title="Găsește-mă"
             >
               {geolocating ? (
@@ -289,48 +303,41 @@ function MapContent() {
 
         {/* Quick Filters */}
         <div className="px-3 pb-3 flex gap-2 overflow-x-auto no-scrollbar">
-          <div className="relative flex-shrink-0">
-            <select
-              value={county}
-              onChange={(e) => updateFilter('county', e.target.value)}
-              className={cn(
-                "appearance-none h-8 pl-3 pr-8 text-xs rounded-xl border bg-white/60 cursor-pointer transition-colors min-w-[120px]",
-                county ? "border-primary/50 bg-primary/10 text-primary" : "border-border/50"
-              )}
-            >
-              <option value="">Toate județele</option>
-              {filters?.counties.map(c => (
-                <option key={c.code} value={c.code}>{c.name}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
-          </div>
+          <MultiSelect
+            options={filters?.counties.map(c => ({ value: c.code, label: c.name })) || []}
+            values={counties}
+            onValuesChange={(v) => updateMultiFilter('counties', v)}
+            placeholder="Județ"
+            searchPlaceholder="Caută județ..."
+            className="flex-shrink-0"
+            maxDisplay={1}
+          />
 
-          <div className="relative flex-shrink-0">
-            <select
-              value={type}
-              onChange={(e) => updateFilter('type', e.target.value)}
-              className={cn(
-                "appearance-none h-8 pl-3 pr-8 text-xs rounded-xl border bg-white/60 cursor-pointer transition-colors min-w-[140px]",
-                type ? "border-primary/50 bg-primary/10 text-primary" : "border-border/50"
-              )}
-            >
-              <option value="">Toate tipurile</option>
-              {filters?.providerTypes.map(t => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
-          </div>
+          <MultiSelect
+            options={filters?.providerTypes.map(t => ({ value: t.value, label: t.label })) || []}
+            values={types}
+            onValuesChange={(v) => updateMultiFilter('types', v)}
+            placeholder="Tip"
+            searchPlaceholder="Caută tip..."
+            className="flex-shrink-0"
+            maxDisplay={1}
+          />
+
+          <MultiSelect
+            options={filters?.specialties.map(s => ({ value: s.name, label: s.name })) || []}
+            values={specialtiesList}
+            onValuesChange={(v) => updateMultiFilter('specialties', v)}
+            placeholder="Specialitate"
+            searchPlaceholder="Caută specialitate..."
+            className="flex-shrink-0"
+            maxDisplay={1}
+          />
 
           <Button
-            variant={network === 'true' ? 'default' : 'outline'}
+            variant={network === 'true' ? 'accent' : 'filter'}
             size="sm"
             onClick={() => updateFilter('network', network === 'true' ? '' : 'true')}
-            className={cn(
-              "h-8 text-xs rounded-xl",
-              network === 'true' && "bg-accent hover:bg-accent/90"
-            )}
+            className="flex-shrink-0"
           >
             <Network className="h-3 w-3 mr-1" />
             Rețele
@@ -411,8 +418,8 @@ function MapContent() {
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]">
                   <Button
                     onClick={() => setShowList(true)}
-                    className="shadow-xl rounded-full px-6 py-2 btn-gradient"
                     size="lg"
+                    className="rounded-full px-8"
                   >
                     <List className="h-5 w-5 mr-2" />
                     Vezi lista ({visibleLocations.length})
@@ -438,10 +445,9 @@ function MapContent() {
                       </p>
                     </div>
                     <Button
-                      variant="ghost"
+                      variant="soft"
                       size="sm"
                       onClick={() => setShowList(false)}
-                      className="h-8 px-3 rounded-xl"
                     >
                       <MapIcon className="h-4 w-4 mr-1" />
                       Hartă
@@ -491,41 +497,63 @@ function LocationListItem({
     <div
       id={`loc-${location.id}`}
       className={cn(
-        "p-3 transition-colors",
-        isSelected && "bg-primary/5"
+        "p-4 transition-all hover:bg-primary/5",
+        isSelected && "bg-primary/10 border-l-4 border-l-primary"
       )}
     >
-      <Link href={`/clinic/${location.id}`} className="block">
-        <div className="flex items-start justify-between gap-2">
+      <Link href={`/clinic/${location.id}`} className="block touch-target">
+        <div className="flex items-start gap-3">
+          {/* Distance badge - prominent for elderly users */}
+          {location.distance !== undefined && (
+            <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-primary/10 flex flex-col items-center justify-center">
+              <span className="text-lg font-bold text-primary">
+                {location.distance < 1 ? Math.round(location.distance * 1000) : location.distance.toFixed(1)}
+              </span>
+              <span className="text-xs text-primary/70">
+                {location.distance < 1 ? 'm' : 'km'}
+              </span>
+            </div>
+          )}
+
           <div className="flex-1 min-w-0">
+            {/* Network badge */}
             {location.is_network && location.network_brand && (
-              <Badge className="mb-1 bg-accent/10 text-accent border-accent/20 text-xs">
-                <Network className="h-3 w-3 mr-1" />
+              <Badge className="mb-2 bg-accent/10 text-accent border-accent/20 text-sm px-3 py-1">
+                <Network className="h-3.5 w-3.5 mr-1.5" />
                 {location.network_brand}
               </Badge>
             )}
-            <h3 className="font-medium text-sm text-foreground truncate">{location.name}</h3>
-            <p className="text-xs text-muted-foreground truncate">
-              {location.city || location.address || location.county?.name}
+
+            {/* Name - larger for readability */}
+            <h3 className="font-semibold text-base text-foreground leading-tight mb-1">
+              {location.name}
+            </h3>
+
+            {/* Address - clear and readable */}
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {location.address || location.city || location.county?.name}
             </p>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            {location.distance !== undefined && (
-              <span className="text-xs font-semibold text-primary">
-                {formatDistance(location.distance)}
-              </span>
+
+            {/* County if different from address */}
+            {location.county?.name && location.address && !location.address.includes(location.county.name) && (
+              <p className="text-xs text-muted-foreground/70 mt-0.5">
+                {location.county.name}
+              </p>
             )}
           </div>
         </div>
       </Link>
 
-      {/* Quick Actions */}
-      <div className="flex gap-2 mt-2">
+      {/* Quick Actions - large touch targets for elderly */}
+      <div className="flex gap-3 mt-4">
         {location.phone && (
           <a href={`tel:${location.phone.replace(/\D/g, '')}`} className="flex-1">
-            <Button variant="outline" size="sm" className="w-full h-8 text-xs rounded-xl">
-              <Phone className="h-3 w-3 mr-1" />
-              Sună
+            <Button
+              variant="outline"
+              className="w-full h-12 text-sm rounded-xl border-2 border-emerald-500/30 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-500/50 font-medium"
+            >
+              <Phone className="h-5 w-5 mr-2" />
+              Sună acum
             </Button>
           </a>
         )}
@@ -538,8 +566,11 @@ function LocationListItem({
           rel="noopener noreferrer"
           className="flex-1"
         >
-          <Button variant="outline" size="sm" className="w-full h-8 text-xs rounded-xl">
-            <Navigation className="h-3 w-3 mr-1" />
+          <Button
+            variant="outline"
+            className="w-full h-12 text-sm rounded-xl border-2 border-blue-500/30 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:border-blue-500/50 font-medium"
+          >
+            <Navigation className="h-5 w-5 mr-2" />
             Direcții
           </Button>
         </a>

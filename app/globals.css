@@ -401,3 +401,70 @@
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
+
+/* High Contrast Mode for Accessibility */
+.high-contrast {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --primary: 210 100% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 30%;
+  --accent: 270 100% 35%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 100% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 0%;
+  --input: 0 0% 0%;
+  --ring: 210 100% 30%;
+}
+
+.high-contrast body {
+  background: white !important;
+}
+
+.high-contrast .glass-card,
+.high-contrast .bg-white\/80,
+.high-contrast .bg-white\/90,
+.high-contrast .bg-white\/60 {
+  background: white !important;
+  border: 2px solid black !important;
+}
+
+.high-contrast .text-muted-foreground {
+  color: hsl(0 0% 20%) !important;
+}
+
+.high-contrast .border-border\/50,
+.high-contrast .border-primary\/20,
+.high-contrast .border-white\/20 {
+  border-color: black !important;
+}
+
+.high-contrast button,
+.high-contrast a {
+  border-width: 2px !important;
+}
+
+.high-contrast .shadow-lg,
+.high-contrast .shadow-xl {
+  box-shadow: 0 0 0 2px black !important;
+}
+
+/* Pulse animation for user location marker */
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}

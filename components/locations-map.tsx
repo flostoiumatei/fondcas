@@ -217,10 +217,50 @@ export default function LocationsMap({
       // Clear existing markers
       markersLayer.clearLayers();
 
-      // Add user location marker
+      // Add user location marker (Google Maps style blue dot)
       if (userLocation) {
-        const userMarker = L.marker([userLocation.lat, userLocation.lng]);
-        userMarker.bindPopup('📍 Locația ta');
+        // Pulsing circle for accuracy indicator
+        const pulseIcon = L.divIcon({
+          className: 'user-location-pulse',
+          html: `
+            <div style="position: relative; width: 40px; height: 40px;">
+              <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 40px;
+                background: rgba(66, 133, 244, 0.2);
+                border-radius: 50%;
+                animation: pulse 2s ease-out infinite;
+              "></div>
+              <div style="
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 18px;
+                height: 18px;
+                background: #4285F4;
+                border: 3px solid white;
+                border-radius: 50%;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+              "></div>
+            </div>
+            <style>
+              @keyframes pulse {
+                0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+                100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+              }
+            </style>
+          `,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20],
+        });
+
+        const userMarker = L.marker([userLocation.lat, userLocation.lng], { icon: pulseIcon, zIndexOffset: 1000 });
+        userMarker.bindPopup('<div style="text-align: center; font-weight: 600; color: #4285F4;">📍 Locația ta</div>');
         markersLayer.addLayer(userMarker);
       }
 

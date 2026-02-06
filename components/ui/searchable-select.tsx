@@ -64,12 +64,13 @@ export function SearchableSelect({
     }}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant={selectedOption ? "filterActive" : "filter"}
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
+          size="sm"
           className={cn(
-            "w-full justify-between font-normal h-10",
+            "justify-between min-w-[100px]",
             !selectedOption && "text-muted-foreground",
             className
           )}
@@ -81,14 +82,14 @@ export function SearchableSelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[--radix-popover-trigger-width] p-0"
+        className="w-[--radix-popover-trigger-width] min-w-[200px] p-0 rounded-xl shadow-xl border-primary/20"
         align="start"
         sideOffset={4}
       >
         <div className="flex flex-col">
           {/* Search input */}
-          <div className="flex items-center border-b px-3 py-2">
-            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+          <div className="flex items-center border-b border-primary/10 px-3 py-2">
+            <Search className="mr-2 h-4 w-4 shrink-0 text-primary/50" />
             <input
               type="text"
               placeholder={searchPlaceholder}
@@ -112,15 +113,15 @@ export function SearchableSelect({
                   type="button"
                   onClick={() => handleSelect(option.value)}
                   className={cn(
-                    "relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-2 text-sm outline-none",
-                    "hover:bg-accent hover:text-accent-foreground",
-                    "focus:bg-accent focus:text-accent-foreground",
-                    value === option.value && "bg-accent"
+                    "relative flex w-full cursor-pointer select-none items-center rounded-lg px-3 py-2.5 text-sm outline-none transition-colors",
+                    "hover:bg-primary/10",
+                    "focus:bg-primary/10",
+                    value === option.value && "bg-primary/10 text-primary font-medium"
                   )}
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4 flex-shrink-0",
+                      "mr-2 h-4 w-4 flex-shrink-0 text-primary",
                       value === option.value ? "opacity-100" : "opacity-0"
                     )}
                   />

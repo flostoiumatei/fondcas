@@ -231,16 +231,11 @@ function SearchContent() {
             </div>
             <Button
               type="button"
-              variant="outline"
-              size="icon"
+              variant={(lat && lng) ? 'default' : 'outline'}
+              size="iconSm"
               onClick={handleGeolocation}
               disabled={geolocating}
-              className={cn(
-                "h-10 w-10 rounded-xl transition-all flex-shrink-0",
-                (lat && lng)
-                  ? "bg-primary text-white border-primary hover:bg-primary/90"
-                  : "bg-white border-primary/20 hover:border-primary/40"
-              )}
+              className="flex-shrink-0"
               title="Lângă mine"
             >
               {geolocating ? (
@@ -280,14 +275,10 @@ function SearchContent() {
           />
           <Button
             type="button"
+            variant={network === 'true' ? 'accent' : 'filter'}
             size="sm"
             onClick={() => updateFilter('network', network === 'true' ? '' : 'true')}
-            className={cn(
-              "h-9 px-3 flex-shrink-0 rounded-lg text-sm font-medium transition-all",
-              network === 'true'
-                ? "bg-accent text-white hover:bg-accent/90"
-                : "bg-white border border-accent/30 text-accent hover:bg-accent/10"
-            )}
+            className="flex-shrink-0"
           >
             <Network className="h-3.5 w-3.5 mr-1.5" />
             Rețele
@@ -349,7 +340,7 @@ function SearchContent() {
             <p className="text-muted-foreground mb-6 max-w-xs mx-auto">
               Încearcă să modifici filtrele sau să cauți altceva
             </p>
-            <Button onClick={() => router.push('/search')} className="btn-gradient rounded-xl px-6">
+            <Button onClick={() => router.push('/search')} size="lg">
               Resetează filtrele
             </Button>
           </div>
@@ -364,11 +355,13 @@ function SearchContent() {
                 <Button
                   onClick={loadMore}
                   disabled={loadingMore}
-                  className="w-full max-w-sm rounded-2xl h-12 bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 text-primary font-semibold hover:from-primary/20 hover:to-accent/20 transition-all"
+                  variant="soft"
+                  size="lg"
+                  className="w-full max-w-sm"
                 >
                   {loadingMore ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                       Se încarcă...
                     </>
                   ) : (

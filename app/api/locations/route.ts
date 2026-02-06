@@ -183,14 +183,58 @@ export async function GET(request: NextRequest) {
     // Only show locations with reasonable confidence
     queryBuilder = queryBuilder.gte('confidence', 50);
 
-    // Pagination and ordering
+    // Ordering
     queryBuilder = queryBuilder
-      .range(offset, offset + limit - 1)
       .order('is_primary', { ascending: false })
       .order('confidence', { ascending: false })
       .order('name');
 
-    const { data, error, count } = await queryBuilder;
+    // Supabase has a default limit of 1000 rows per request
+    // For large requests (like map view), fetch in batches
+    const SUPABASE_MAX = 1000;
+    let data: any[] = [];
+    let count = 0;
+    let error: any = null;
+
+    if (limit > SUPABASE_MAX) {
+      // Fetch in batches for large requests
+      let currentOffset = offset;
+      let remaining = limit;
+
+      while (remaining > 0) {
+        const batchSize = Math.min(remaining, SUPABASE_MAX);
+        const batchQuery = queryBuilder.range(currentOffset, currentOffset + batchSize - 1);
+        const result = await batchQuery;
+
+        if (result.error) {
+          error = result.error;
+          break;
+        }
+
+        if (result.count !== undefined && result.count !== null && count === 0) {
+          count = result.count;
+        }
+
+        if (!result.data || result.data.length === 0) {
+          break; // No more results
+        }
+
+        data = data.concat(result.data);
+        currentOffset += result.data.length;
+        remaining -= result.data.length;
+
+        // If we got less than requested, we've reached the end
+        if (result.data.length < batchSize) {
+          break;
+        }
+      }
+    } else {
+      // Normal single request for small limits
+      const result = await queryBuilder.range(offset, offset + limit - 1);
+      data = result.data || [];
+      error = result.error;
+      count = result.count || 0;
+    }
 
     if (error) {
       console.error('Search error:', error);

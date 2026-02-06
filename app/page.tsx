@@ -123,7 +123,8 @@ export default function HomePage() {
             <div className="flex gap-2">
               <Button
                 type="submit"
-                className="flex-1 h-12 rounded-2xl text-base font-semibold btn-gradient"
+                size="lg"
+                className="flex-1 rounded-2xl text-base"
               >
                 <Search className="h-5 w-5 mr-2" />
                 Caută
@@ -132,15 +133,16 @@ export default function HomePage() {
               <Button
                 type="button"
                 variant="outline"
+                size="lg"
                 onClick={handleNearbySearch}
                 disabled={locating}
-                className="h-12 px-4 rounded-2xl bg-white/80 backdrop-blur-sm border-white/50 hover:bg-white hover:border-primary/30"
+                className="rounded-2xl px-4"
                 title="Găsește în apropierea mea"
               >
                 {locating ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <Locate className="h-5 w-5 text-primary" />
+                  <Locate className="h-5 w-5" />
                 )}
               </Button>
 
@@ -148,10 +150,11 @@ export default function HomePage() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-12 px-4 rounded-2xl bg-white/80 backdrop-blur-sm border-white/50 hover:bg-white hover:border-primary/30"
+                  size="lg"
+                  className="rounded-2xl px-4"
                   title="Vezi pe hartă"
                 >
-                  <Map className="h-5 w-5 text-primary" />
+                  <Map className="h-5 w-5" />
                 </Button>
               </Link>
             </div>

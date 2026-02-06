@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { BottomNav } from '@/components/layout/bottom-nav';
 import { AnimatedBackground } from '@/components/layout/animated-background';
+import { AccessibilityProvider, AccessibilityControls } from '@/components/accessibility-provider';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -78,9 +79,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-sans antialiased overflow-x-hidden">
-        <AnimatedBackground />
-        <main className="relative pb-20 safe-bottom">{children}</main>
-        <BottomNav />
+        <AccessibilityProvider>
+          <AnimatedBackground />
+          <main className="relative pb-20 safe-bottom">{children}</main>
+          <BottomNav />
+          <AccessibilityControls />
+        </AccessibilityProvider>
       </body>
     </html>
   );
