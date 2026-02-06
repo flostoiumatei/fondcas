@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('query');
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
-    const radius = searchParams.get('radius') || '10';
+    const radius = searchParams.get('radius') || '3';
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = (page - 1) * limit;

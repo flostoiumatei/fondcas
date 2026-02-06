@@ -82,7 +82,7 @@ export default function MapView({
         const params = new URLSearchParams(window.location.search);
         params.set('lat', position.coords.latitude.toString());
         params.set('lng', position.coords.longitude.toString());
-        params.set('radius', '10');
+        params.set('radius', '3');
         params.set('view', 'map');
         router.push(`/search?${params.toString()}`);
         setIsLocating(false);

@@ -63,7 +63,7 @@ export default function HomePage() {
       (position) => {
         const { latitude, longitude } = position.coords;
         // Go to map view with user location
-        router.push(`/map?lat=${latitude}&lng=${longitude}&radius=10`);
+        router.push(`/map?lat=${latitude}&lng=${longitude}&radius=3`);
         setLocating(false);
       },
       (error) => {

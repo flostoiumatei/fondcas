@@ -180,7 +180,7 @@ export function SearchForm({ compact = false, className, onSearch }: SearchFormP
         const params = new URLSearchParams();
         params.set('lat', position.coords.latitude.toString());
         params.set('lng', position.coords.longitude.toString());
-        params.set('radius', '10');
+        params.set('radius', '3');
         if (type) params.set('type', type);
         if (specialty) params.set('specialty', specialty);
         router.push(`/search?${params.toString()}`);

@@ -81,6 +81,7 @@ function SearchContent() {
   const network = searchParams.get('network') || '';
   const lat = searchParams.get('lat');
   const lng = searchParams.get('lng');
+  const radius = searchParams.get('radius') || '3';
 
   // Fetch filter options
   useEffect(() => {
@@ -107,7 +108,7 @@ function SearchContent() {
       if (lat && lng) {
         params.set('lat', lat);
         params.set('lng', lng);
-        params.set('radius', '15');
+        params.set('radius', radius);
       }
       params.set('page', pageNum.toString());
       params.set('limit', '30');
@@ -131,7 +132,7 @@ function SearchContent() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [query, county, type, specialty, network, lat, lng]);
+  }, [query, county, type, specialty, network, lat, lng, radius]);
 
   useEffect(() => {
     setPage(1);

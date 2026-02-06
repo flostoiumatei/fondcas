@@ -88,7 +88,7 @@ function MapContent() {
   const network = searchParams.get('network') || '';
   const urlLat = searchParams.get('lat');
   const urlLng = searchParams.get('lng');
-  const radius = parseFloat(searchParams.get('radius') || '10');
+  const radius = parseFloat(searchParams.get('radius') || '3');
 
   // Set user location from URL params on mount
   useEffect(() => {
@@ -211,7 +211,7 @@ function MapContent() {
         params.set('lat', newLocation.lat.toString());
         params.set('lng', newLocation.lng.toString());
         if (!params.get('radius')) {
-          params.set('radius', '10');
+          params.set('radius', '3');
         }
         router.push(`/map?${params.toString()}`);
         setGeolocating(false);

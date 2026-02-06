@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
 
     const lat = searchParams.get('lat');
     const lng = searchParams.get('lng');
-    const radius = searchParams.get('radius') || '10';
+    const radius = searchParams.get('radius') || '3';
     const type = searchParams.get('type');
     const limit = parseInt(searchParams.get('limit') || '20');
 
