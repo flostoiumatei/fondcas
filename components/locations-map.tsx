@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster';
 
 // Fix for default marker icons in Next.js - use CDN URLs
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -68,7 +71,7 @@ export default function LocationsMap({
 }: LocationsMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
-  const markersLayerRef = useRef<L.LayerGroup | null>(null);
+  const markersLayerRef = useRef<L.MarkerClusterGroup | L.LayerGroup | null>(null);
   const locationsRef = useRef<MapLocation[]>(locations);
   const mountedRef = useRef(true);
   // Restore lastCenterKey from sessionStorage to prevent re-centering on back navigation
@@ -170,7 +173,24 @@ export default function LocationsMap({
         maxZoom: 19,
       }).addTo(map);
 
-      const markersLayer = L.layerGroup().addTo(map);
+      // Use marker clustering to handle overlapping markers
+      const markersLayer = (L as any).markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        iconCreateFunction: (cluster: any) => {
+          const count = cluster.getChildCount();
+          let size = 'small';
+          if (count >= 10) size = 'medium';
+          if (count >= 50) size = 'large';
+          return L.divIcon({
+            html: `<div class="cluster-marker cluster-${size}"><span>${count}</span></div>`,
+            className: 'marker-cluster-custom',
+            iconSize: L.point(40, 40),
+          });
+        },
+      }).addTo(map);
 
       mapInstanceRef.current = map;
       markersLayerRef.current = markersLayer;
