@@ -23,6 +23,52 @@ import { Badge } from '@/components/ui/badge';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { cn, formatPhone, getDirectionsUrl, getGoogleMapsSearchUrl, calculateDistance, formatDistance } from '@/lib/utils';
 
+// Romanian county centers (approximate) for map zooming
+const COUNTY_CENTERS: Record<string, { lat: number; lng: number; zoom: number }> = {
+  'AB': { lat: 46.0667, lng: 23.58, zoom: 10 },      // Alba
+  'AR': { lat: 46.1667, lng: 21.3167, zoom: 10 },    // Arad
+  'AG': { lat: 44.85, lng: 24.8667, zoom: 10 },      // Argeș
+  'BC': { lat: 46.5667, lng: 26.9, zoom: 10 },       // Bacău
+  'BH': { lat: 47.05, lng: 22.0, zoom: 10 },         // Bihor
+  'BN': { lat: 47.1333, lng: 24.5, zoom: 10 },       // Bistrița-Năsăud
+  'BT': { lat: 47.75, lng: 26.6667, zoom: 10 },      // Botoșani
+  'BR': { lat: 45.2667, lng: 27.9667, zoom: 11 },    // Brăila
+  'BV': { lat: 45.65, lng: 25.6, zoom: 10 },         // Brașov
+  'B': { lat: 44.4268, lng: 26.1025, zoom: 12 },     // București
+  'BZ': { lat: 45.15, lng: 26.8167, zoom: 10 },      // Buzău
+  'CL': { lat: 44.2, lng: 26.9, zoom: 10 },          // Călărași
+  'CS': { lat: 45.3, lng: 21.9, zoom: 9 },           // Caraș-Severin
+  'CJ': { lat: 46.7667, lng: 23.6, zoom: 10 },       // Cluj
+  'CT': { lat: 44.1733, lng: 28.6383, zoom: 10 },    // Constanța
+  'CV': { lat: 45.85, lng: 26.0, zoom: 10 },         // Covasna
+  'DB': { lat: 44.9167, lng: 25.45, zoom: 10 },      // Dâmbovița
+  'DJ': { lat: 44.3167, lng: 23.8, zoom: 10 },       // Dolj
+  'GL': { lat: 45.45, lng: 28.05, zoom: 10 },        // Galați
+  'GR': { lat: 43.9, lng: 25.9667, zoom: 10 },       // Giurgiu
+  'GJ': { lat: 45.05, lng: 23.2833, zoom: 10 },      // Gorj
+  'HR': { lat: 46.35, lng: 25.55, zoom: 10 },        // Harghita
+  'HD': { lat: 45.75, lng: 22.9, zoom: 10 },         // Hunedoara
+  'IL': { lat: 44.6, lng: 27.3667, zoom: 10 },       // Ialomița
+  'IS': { lat: 47.1667, lng: 27.6, zoom: 10 },       // Iași
+  'IF': { lat: 44.5, lng: 26.0833, zoom: 11 },       // Ilfov
+  'MM': { lat: 47.65, lng: 24.0, zoom: 10 },         // Maramureș
+  'MH': { lat: 44.6333, lng: 22.65, zoom: 10 },      // Mehedinți
+  'MS': { lat: 46.55, lng: 24.55, zoom: 10 },        // Mureș
+  'NT': { lat: 46.9333, lng: 26.3667, zoom: 10 },    // Neamț
+  'OT': { lat: 44.4333, lng: 24.35, zoom: 10 },      // Olt
+  'PH': { lat: 45.0, lng: 26.0167, zoom: 10 },       // Prahova
+  'SJ': { lat: 47.05, lng: 23.05, zoom: 10 },        // Sălaj
+  'SM': { lat: 47.8, lng: 22.8833, zoom: 10 },       // Satu Mare
+  'SB': { lat: 45.8, lng: 24.15, zoom: 10 },         // Sibiu
+  'SV': { lat: 47.65, lng: 26.25, zoom: 9 },         // Suceava
+  'TR': { lat: 43.9833, lng: 25.3167, zoom: 10 },    // Teleorman
+  'TM': { lat: 45.75, lng: 21.2333, zoom: 10 },      // Timiș
+  'TL': { lat: 45.1833, lng: 28.8, zoom: 9 },        // Tulcea
+  'VL': { lat: 45.1, lng: 24.3667, zoom: 10 },       // Vâlcea
+  'VS': { lat: 46.6333, lng: 27.7333, zoom: 10 },    // Vaslui
+  'VN': { lat: 45.7, lng: 27.1833, zoom: 10 },       // Vrancea
+};
+
 const LocationsMap = dynamic(() => import('@/components/locations-map'), {
   ssr: false,
   loading: () => (
@@ -407,14 +453,32 @@ function MapContent() {
             >
               <LocationsMap
                 locations={mapLocations}
-                center={urlLat && urlLng ? { lat: parseFloat(urlLat), lng: parseFloat(urlLng) } : undefined}
-                zoom={urlLat && urlLng ? (radius <= 1 ? 16 : radius <= 2 ? 15 : radius <= 3 ? 14 : radius <= 5 ? 13 : radius <= 10 ? 12 : 11) : undefined}
+                center={
+                  urlLat && urlLng
+                    ? { lat: parseFloat(urlLat), lng: parseFloat(urlLng) }
+                    : counties.length === 1 && COUNTY_CENTERS[counties[0]]
+                      ? { lat: COUNTY_CENTERS[counties[0]].lat, lng: COUNTY_CENTERS[counties[0]].lng }
+                      : undefined
+                }
+                zoom={
+                  urlLat && urlLng
+                    ? (radius <= 1 ? 16 : radius <= 2 ? 15 : radius <= 3 ? 14 : radius <= 5 ? 13 : radius <= 10 ? 12 : 11)
+                    : counties.length === 1 && COUNTY_CENTERS[counties[0]]
+                      ? COUNTY_CENTERS[counties[0]].zoom
+                      : undefined
+                }
                 userLocation={userLocation}
                 radius={userLocation ? radius : undefined}
                 onLocationClick={handleLocationClick}
                 onBoundsChange={handleBoundsChange}
                 height="100%"
-                centerKey={urlLat && urlLng ? `${urlLat}-${urlLng}-${radius}` : 'default'}
+                centerKey={
+                  urlLat && urlLng
+                    ? `${urlLat}-${urlLng}-${radius}`
+                    : counties.length === 1
+                      ? `county-${counties[0]}`
+                      : 'default'
+                }
               />
 
               {/* Floating counter - always visible on map */}
